@@ -1,0 +1,42 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:uivah="http://vah.com.br/vah"
+                xmlns:p="http://primefaces.org/ui">
+  <ui:define name="content">
+    <h:form>
+
+      <p:panel id="setorPnl" header="Selecione o setor">
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <div class="ui-messages ui-widget" aria-live="polite">
+            <div class="ui-messages-info ui-corner-all">
+              <span class="ui-messages-info-icon"></span>
+              <ul>
+                <li>
+                  <h:panelGroup styleClass="ui-messages-info-detail">
+                    Olá, bem vindo ao sistema de gestão de contratos (GESCON).
+                    <br/>
+                    Por favor, confirme seu email.
+                  </h:panelGroup>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p:focus context="emailPnl"/>
+          <h:panelGrid id="grid"
+                       columns="3"
+                       cellpadding="5" style="margin-top: 25px;">
+            <p:outputLabel value="Email:" indicateRequired="true"/>
+            <p:inputText value="#{sessionCtrl.user.email}" maxlength=""
+          </h:panelGrid>
+        </h:panelGroup>
+        <p:commandButton id="prosseguirBtn" value="Prosseguir" action="#{sessionCtrl.prosseguir}"
+                         style="font-size: 25px; margin-top: 25px"
+                         onstart="PF('changePage').show()"
+                         onerror="PF('changePage').hide()"
+                         disabled="#{sessionCtrl.setor == null or sessionCtrl.setor.id == null}"/>
+      </p:panel>
+    </h:form>
+  </ui:define>
+</ui:composition>
