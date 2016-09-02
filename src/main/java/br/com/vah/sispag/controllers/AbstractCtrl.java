@@ -155,7 +155,7 @@ public abstract class AbstractCtrl<T extends BaseEntity> implements Serializable
    */
   public String doSave() {
     try {
-      if (item.getId() == null) {
+      if (item.getIdentity() == null) {
         item = getService().create(item);
       } else {
         item = getService().update(item);
@@ -293,11 +293,11 @@ public abstract class AbstractCtrl<T extends BaseEntity> implements Serializable
   }
 
   public String edit(T item) {
-    return editPage() + _FACES_REDIRECT + _ID_PARAM + item.getId();
+    return editPage() + _FACES_REDIRECT + _ID_PARAM + item.getIdentity();
   }
 
   public String detail(T item) {
-    return detailPage() + _FACES_REDIRECT + _ID_PARAM + item.getId();
+    return detailPage() + _FACES_REDIRECT + _ID_PARAM + item.getIdentity();
   }
 
   public String getEditLabel() {

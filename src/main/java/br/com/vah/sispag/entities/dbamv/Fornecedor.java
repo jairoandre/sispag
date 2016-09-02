@@ -2,16 +2,14 @@ package br.com.vah.sispag.entities.dbamv;
 
 import br.com.vah.sispag.entities.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "FORNECEDOR", schema = "DBAMV")
-@NamedQueries({@NamedQuery(name = Fornecedor.ALL, query = "SELECT c FROM Fornecedor c"),
-    @NamedQuery(name = Fornecedor.COUNT, query = "SELECT COUNT(c) FROM Fornecedor c")})
 public class Fornecedor extends BaseEntity {
-
-  public final static String ALL = "Fornecedor.populatedItems";
-  public final static String COUNT = "Fornecedor.countTotal";
 
   /**
    *
@@ -46,12 +44,10 @@ public class Fornecedor extends BaseEntity {
   public Fornecedor() {
   }
 
-  @Override
   public Long getId() {
     return id;
   }
 
-  @Override
   public void setId(Long id) {
     this.id = id;
   }
@@ -110,6 +106,11 @@ public class Fornecedor extends BaseEntity {
 
   public void setCep(String cep) {
     this.cep = cep;
+  }
+
+  @Override
+  public Object getIdentity() {
+    return id;
   }
 
   @Override

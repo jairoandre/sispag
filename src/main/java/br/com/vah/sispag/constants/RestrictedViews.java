@@ -5,9 +5,8 @@ package br.com.vah.sispag.constants;
  */
 public enum RestrictedViews {
 
-  USER_LIST("/admin/user/edit.xhtml", RoleEnum.ADMINISTRATOR),
-  USER_EDIT("/admin/user/list.xhtml", RoleEnum.ADMINISTRATOR),
-  CONFIG_EDIT("/pages/diasAviso/list.xhtml", RoleEnum.ADMINISTRATOR, RoleEnum.JURIDICO);
+  USER_LIST("/admin/user/edit.xhtml", RoleEnum.ADMINISTRADOR),
+  USER_EDIT("/admin/user/list.xhtml", RoleEnum.ADMINISTRADOR);
 
   private String view;
 

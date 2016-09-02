@@ -11,12 +11,8 @@
       </p:menuitem>
       <p:menuitem value="Usuários"
                   action="/pages/user/list.xhtml?faces-redirect=true" ajax="false"
-                  rendered="#{sessionCtrl.isUserInRoles('ADMINISTRATOR')}"
+                  rendered="#{sessionCtrl.isUserInRoles('ADMINISTRADOR')}"
                   icon="fa fa-user" onstart="PF('changePage').show()"/>
-      <p:menuitem value="Configurações"
-                  action="/pages/diasAviso/list.xhtml?faces-redirect=true" ajax="false"
-                  rendered="#{sessionCtrl.isUserInRoles('JURIDICO')}"
-                  icon="fa fa-gear" onstart="PF('changePage').show()"/>
       <p:menuitem value="Pré-Internação"
                   action="/pages/contrato/list.xhtml?faces-redirect=true" ajax="false"
                   icon="fa fa-ambulance" onstart="PF('changePage').show()"/>
@@ -27,10 +23,10 @@
 
         <h:panelGroup style="margin-top: 3px;" layout="block">
           <p:commandButton value="#{sessionCtrl.username}"
-                           icon="fa fa-user" rendered="#{request.getUserPrincipal() != null}"/>
+                           icon="fa fa-user" rendered="#{request.getUserPrincipal() != null}" />
           <p:commandButton value="Logout" action="#{sessionCtrl.logout}"
                            icon="fa fa-sign-out"
-                           rendered="#{request.getUserPrincipal() != null}" onstart="PF('changePage').show()"/>
+                           rendered="#{request.getUserPrincipal() != null}" onstart="PF('changePage').show()" styleClass="margin-left"/>
         </h:panelGroup>
       </f:facet>
     </p:menubar>

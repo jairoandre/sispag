@@ -6,8 +6,9 @@ import java.util.List;
 
 public enum RoleEnum {
   USUARIO("Usuário"),
-  JURIDICO("Jurídico", USUARIO),
-  ADMINISTRATOR("Administrador", JURIDICO);
+  RECEPCAO("Recepção", USUARIO),
+  CIRURGICO("Cirúrgico", USUARIO),
+  ADMINISTRADOR("Administrador", CIRURGICO, RECEPCAO);
 
   private String label;
   private RoleEnum[] subroles;

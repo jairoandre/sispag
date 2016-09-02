@@ -102,7 +102,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
    */
   @Override
   public Object getRowKey(T sector) {
-    return sector.getId().toString();
+    return sector.getIdentity().toString();
   }
 
   /**
@@ -132,7 +132,7 @@ public class GenericLazyDataModel<T extends BaseEntity> extends LazyDataModel<T>
     if (datasource == null)
       return null;
     for (T item : datasource) {
-      if (item.getId().toString().equals(rowKey))
+      if (item.getIdentity().toString().equals(rowKey))
         return item;
     }
     return null;

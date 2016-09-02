@@ -15,7 +15,7 @@ public class ViewUtils {
       selectItems.add(new SelectItem(null, "Selecione..."));
     }
     for (BaseEntity entity : list) {
-      selectItems.add(new SelectItem(entity.getId(), entity.getLabelForSelectItem()));
+      selectItems.add(new SelectItem(entity.getIdentity(), entity.getLabelForSelectItem()));
     }
     return selectItems;
   }

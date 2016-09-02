@@ -16,26 +16,28 @@ public abstract class GenericConverter<T extends BaseEntity> implements Converte
 
   public abstract AbstractSrv<T> getService();
 
+  public Object parseId(String value) {
+    try {
+      return Long.parseLong(value);
+    } catch (NumberFormatException e) {
+      throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de conversão", "Objeto inválido."));
+    }
+  }
+
   @Override
   public Object getAsObject(FacesContext context, UIComponent component, String value) {
-    if(value != null && value.trim().length() > 0) {
-      try {
-        return getService().find(Long.parseLong(value));
-      } catch(NumberFormatException e) {
-        throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro de conversão", "Objeto inválido."));
-      }
-    }
-    else {
+    if (value != null && value.trim().length() > 0) {
+      return getService().find(parseId(value));
+    } else {
       return null;
     }
   }
 
   @Override
   public String getAsString(FacesContext context, UIComponent component, Object value) {
-    if(value != null) {
-      return String.valueOf(((T) value).getId());
-    }
-    else {
+    if (value != null) {
+      return String.valueOf(((T) value).getIdentity());
+    } else {
       return null;
     }
   }

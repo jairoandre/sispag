@@ -32,12 +32,11 @@ public class Setor extends BaseEntity {
   private Integer multiEmpresa;
 
   @Column(name = "CD_GRUPO_DE_CUSTO")
-  private Integer grupoCusto;
+  private Long grupoCusto;
 
   /**
    * @return the id
    */
-  @Override
   public Long getId() {
     return id;
   }
@@ -45,7 +44,6 @@ public class Setor extends BaseEntity {
   /**
    * @param id the id to set
    */
-  @Override
   public void setId(Long id) {
     this.id = id;
   }
@@ -72,12 +70,17 @@ public class Setor extends BaseEntity {
     this.multiEmpresa = multiEmpresa;
   }
 
-  public Integer getGrupoCusto() {
+  public Long getGrupoCusto() {
     return grupoCusto;
   }
 
-  public void setGrupoCusto(Integer grupoCusto) {
+  public void setGrupoCusto(Long grupoCusto) {
     this.grupoCusto = grupoCusto;
+  }
+
+  @Override
+  public Object getIdentity() {
+    return id;
   }
 
   @Override

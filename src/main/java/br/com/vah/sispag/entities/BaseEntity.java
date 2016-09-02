@@ -14,16 +14,12 @@ public abstract class BaseEntity implements Serializable {
    */
   private static final long serialVersionUID = 1L;
 
-  public abstract Long getId();
-
-  public abstract void setId(Long id);
-
-  public abstract String getLabelForSelectItem();
+  public abstract Object getIdentity();
 
   @Override
   public int hashCode() {
     int hash = 0;
-    hash += (getId() != null ? getId().hashCode() : 0);
+    hash += (getIdentity() != null ? getIdentity().hashCode() : 0);
     return hash;
   }
 
@@ -34,7 +30,7 @@ public abstract class BaseEntity implements Serializable {
       return false;
     } else if (!(obj instanceof BaseEntity)) {
       return false;
-    } else if (((BaseEntity) obj).getId() != null && ((BaseEntity) obj).getId().equals(this.getId())) {
+    } else if (((BaseEntity) obj).getIdentity() != null && ((BaseEntity) obj).getIdentity().equals(this.getIdentity())) {
       return true;
     } else {
       return obj == this;
@@ -43,6 +39,10 @@ public abstract class BaseEntity implements Serializable {
 
   @Override
   public String toString() {
-    return "entity." + this.getClass() + "[ id=" + getId() + " ] ";
+    return "entity." + this.getClass() + "[ id=" + getIdentity() + " ] ";
+  }
+
+  public String getLabelForSelectItem() {
+    return getIdentity().toString();
   }
 }
