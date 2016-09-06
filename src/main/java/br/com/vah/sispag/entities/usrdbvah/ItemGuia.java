@@ -22,12 +22,8 @@ public class ItemGuia extends BaseEntity {
   @JoinColumn(name = "ID_GUIA")
   private Guia guia;
 
-  @ManyToOne
-  @JoinColumn(name = "CD_PRO_FAT")
-  private ProFat proFat;
-
-  @Column(name = "NM_OUTRO")
-  private String outro;
+  @Column(name = "NM_NOME")
+  private String nome;
 
   public Long getId() {
     return id;
@@ -45,20 +41,12 @@ public class ItemGuia extends BaseEntity {
     this.guia = guia;
   }
 
-  public ProFat getProFat() {
-    return proFat;
+  public String getNome() {
+    return nome;
   }
 
-  public void setProFat(ProFat proFat) {
-    this.proFat = proFat;
-  }
-
-  public String getOutro() {
-    return outro;
-  }
-
-  public void setOutro(String outro) {
-    this.outro = outro;
+  public void setNome(String nome) {
+    this.nome = nome;
   }
 
   @Override

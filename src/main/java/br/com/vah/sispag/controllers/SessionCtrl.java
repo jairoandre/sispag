@@ -1,10 +1,10 @@
 package br.com.vah.sispag.controllers;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import br.com.vah.sispag.constants.RoleEnum;
+import br.com.vah.sispag.entities.dbamv.Setor;
+import br.com.vah.sispag.entities.usrdbvah.User;
+import br.com.vah.sispag.service.UserSrv;
+import br.com.vah.sispag.util.DateUtility;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -15,13 +15,11 @@ import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import br.com.vah.sispag.constants.RoleEnum;
-import br.com.vah.sispag.entities.dbamv.Setor;
-import br.com.vah.sispag.entities.usrdbvah.User;
-import br.com.vah.sispag.service.UserSrv;
-import br.com.vah.sispag.util.DateUtility;
-import org.primefaces.event.SelectEvent;
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.Principal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Login Controller class allows only authenticated users to log in to the web
@@ -45,6 +43,7 @@ public class SessionCtrl implements Serializable {
   private String username;
   private String password;
   private User user;
+  private Setor setor;
 
 
   /**
@@ -176,5 +175,13 @@ public class SessionCtrl implements Serializable {
 
   public String prosseguir() {
     return "/pages/sispag/list.xhtml?faces-redirect=true";
+  }
+
+  public Setor getSetor() {
+    return setor;
+  }
+
+  public void setSetor(Setor setor) {
+    this.setor = setor;
   }
 }

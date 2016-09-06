@@ -2,9 +2,12 @@ package br.com.vah.sispag.entities.usrdbvah;
 
 import br.com.vah.sispag.constants.TipoGuiaEnum;
 import br.com.vah.sispag.entities.BaseEntity;
+import br.com.vah.sispag.entities.dbamv.Convenio;
+import br.com.vah.sispag.entities.dbamv.Prestador;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -24,13 +27,18 @@ public class Guia extends BaseEntity {
   @Column(name = "CD_TIPO")
   private TipoGuiaEnum tipo;
 
-  @Column(name = "CD_REG_ANS")
-  private String registroANS;
+  @ManyToOne
+  @JoinColumn(name = "CD_CONVENIO")
+  private Convenio convenio;
+
+  @ManyToOne
+  @JoinColumn(name = "CD_PRESTADOR")
+  private Prestador prestador;
 
   @Column(name = "CD_GUIA")
   private String numeroGuia;
 
-  @Column(name = "CD_SOLICT")
+  @Column(name = "CD_SOLICITACAO")
   private String numeroSolicitacao;
 
   @Column(name = "CD_SENHA")
@@ -39,11 +47,8 @@ public class Guia extends BaseEntity {
   @Column(name = "DT_EMISSAO")
   private Date dataEmissao;
 
-  @Column(name = "DT_RESPOSTA")
-  private Date dataResposta;
-
   @Column(name = "NM_PACIENTE")
-  private String nome;
+  private String paciente;
 
   @Column(name = "CD_CNES")
   private String cnes;
@@ -51,24 +56,19 @@ public class Guia extends BaseEntity {
   @Column(name = "CD_CARTAO")
   private String cartao;
 
-  @Column(name = "ID_USUARIO")
-  private User solicitante;
+  @OneToMany(mappedBy = "guia", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Set<ItemGuia> itens = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "guia", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private Set<ItemGuia> itens;
+  @OrderBy("dataEvento DESC")
+  private Set<Evento> eventos = new LinkedHashSet<>();
 
-
-  public Object getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(Object id) {
-    this.id = (Long) id;
-  }
-
-  @Override
-  public String getLabelForSelectItem() {
-    return null;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public TipoGuiaEnum getTipo() {
@@ -79,12 +79,20 @@ public class Guia extends BaseEntity {
     this.tipo = tipo;
   }
 
-  public String getRegistroANS() {
-    return registroANS;
+  public Prestador getPrestador() {
+    return prestador;
   }
 
-  public void setRegistroANS(String registroANS) {
-    this.registroANS = registroANS;
+  public void setPrestador(Prestador prestador) {
+    this.prestador = prestador;
+  }
+
+  public Convenio getConvenio() {
+    return convenio;
+  }
+
+  public void setConvenio(Convenio convenio) {
+    this.convenio = convenio;
   }
 
   public String getNumeroGuia() {
@@ -119,20 +127,12 @@ public class Guia extends BaseEntity {
     this.dataEmissao = dataEmissao;
   }
 
-  public Date getDataResposta() {
-    return dataResposta;
+  public String getPaciente() {
+    return paciente;
   }
 
-  public void setDataResposta(Date dataResposta) {
-    this.dataResposta = dataResposta;
-  }
-
-  public String getNome() {
-    return nome;
-  }
-
-  public void setNome(String nome) {
-    this.nome = nome;
+  public void setPaciente(String paciente) {
+    this.paciente = paciente;
   }
 
   public String getCnes() {
@@ -151,20 +151,20 @@ public class Guia extends BaseEntity {
     this.cartao = cartao;
   }
 
-  public User getSolicitante() {
-    return solicitante;
-  }
-
-  public void setSolicitante(User solicitante) {
-    this.solicitante = solicitante;
-  }
-
   public Set<ItemGuia> getItens() {
     return itens;
   }
 
   public void setItens(Set<ItemGuia> itens) {
     this.itens = itens;
+  }
+
+  public Set<Evento> getEventos() {
+    return eventos;
+  }
+
+  public void setEventos(Set<Evento> eventos) {
+    this.eventos = eventos;
   }
 
   @Override

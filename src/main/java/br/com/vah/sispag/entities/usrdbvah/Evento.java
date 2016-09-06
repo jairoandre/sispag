@@ -1,6 +1,7 @@
 package br.com.vah.sispag.entities.usrdbvah;
 
 import br.com.vah.sispag.constants.TipoEventoEnum;
+import br.com.vah.sispag.constants.TipoGuiaEnum;
 import br.com.vah.sispag.entities.BaseEntity;
 import br.com.vah.sispag.entities.dbamv.Setor;
 
@@ -33,19 +34,20 @@ public class Evento extends BaseEntity {
   @JoinColumn(name = "ID_USUARIO")
   private User usuario;
 
-  @ManyToOne
-  @JoinColumn(name = "ID_SETOR_O")
-  private Setor origem;
-
-  @ManyToOne
-  @JoinColumn(name = "ID_SETOR_D")
-  private Setor destino;
-
   @Column(name = "DT_EVENTO")
   private Date dataEvento;
 
-  @OneToMany(mappedBy = "evento")
-  private Set<Mensagem> mensagens;
+  @Column(name = "NM_MENSAGEM")
+  private String mensagem;
+
+  public Evento(){}
+
+  public Evento(TipoEventoEnum tipo, Guia guia, User usuario) {
+    this.tipo = tipo;
+    this.guia = guia;
+    this.usuario = usuario;
+    this.dataEvento = new Date();
+  }
 
   public Long getId() {
     return id;
@@ -71,22 +73,6 @@ public class Evento extends BaseEntity {
     this.guia = guia;
   }
 
-  public Setor getOrigem() {
-    return origem;
-  }
-
-  public void setOrigem(Setor origem) {
-    this.origem = origem;
-  }
-
-  public Setor getDestino() {
-    return destino;
-  }
-
-  public void setDestino(Setor destino) {
-    this.destino = destino;
-  }
-
   public User getUsuario() {
     return usuario;
   }
@@ -103,12 +89,12 @@ public class Evento extends BaseEntity {
     this.dataEvento = dataEvento;
   }
 
-  public Set<Mensagem> getMensagens() {
-    return mensagens;
+  public String getMensagem() {
+    return mensagem;
   }
 
-  public void setMensagens(Set<Mensagem> mensagens) {
-    this.mensagens = mensagens;
+  public void setMensagem(String mensagem) {
+    this.mensagem = mensagem;
   }
 
   @Override

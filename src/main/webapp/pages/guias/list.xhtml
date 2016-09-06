@@ -3,25 +3,117 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:vah="http://java.sun.com/jsf/composite/vah">
+                xmlns:f="http://java.sun.com/jsf/core">
   <ui:define name="content">
     <h:form id="form">
-      <p:panel header="Usuários">
-        <vah:dataTable id="dataTable" controller="#{userCtrl}"
-                         renderDeleteAction="false" renderAddBtn="false">
-          <p:column sortBy="#{item.id}" headerText="Id"
-                    style="text-align: left;" width="100">
-            <h:outputText value="#{item.id}"/>
-          </p:column>
-          <p:column sortBy="#{item.login}" headerText="Login"
-                    style="text-align: left;" width="200">
-            <h:outputText value="#{item.login}"/>
-          </p:column>
-          <p:column headerText="Perfil" style="text-align: left;">
-            <h:outputText value="#{item.role.label}"/>
-          </p:column>
-        </vah:dataTable>
+      <p:panel header="Guias">
+        <p:commandButton value="Filtros"/>
+        <p:commandButton value="Nova Guia" action="#{guiaCtrl.preOpenModal}" styleClass="margin-left" ajax="true"
+                         process="@this" update="modalWrapper" oncomplete="PF('modal').show();"/>
+        <h:panelGroup id="listWrapper" style="margin-top: 5px;" layout="block">
+          <p:dataTable value="#{guiaCtrl.lazyModel}" var="guia" sortBy="#{guia.id}" sortOrder="descending" paginator="true" emptyMessage="Sem registros"
+                       styleClass="table-left-header"
+                       paginatorPosition="bottom" rows="25" rowKey="index" rowIndexVar="indexVar"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       lazy="true" rowsPerPageTemplate="25,50,100">
+            <p:column headerText="Id" width="75" styleClass="left-align" sortBy="#{guia.id}">
+              <h:outputText value="#{guia.id}"/>
+            </p:column>
+            <p:column headerText="Convênio" width="200" styleClass="left-align" sortBy="#{guia.convenio}">
+              <h:outputText value="#{guia.convenio.nome}"/>
+            </p:column>
+            <p:column headerText="Paciente" styleClass="left-align" sortBy="#{guia.paciente}">
+              <p:commandLink action="#{guiaCtrl.preOpenModal(guia)}" value="#{guia.paciente}"
+                             ajax="true" process="@this" update="#{p:component('modalWrapper')}"
+                             oncomplete="PF('modal').show();"/>
+            </p:column>
+            <p:column headerText="Estado" width="100" styleClass="left-align">
+              <h:outputText id="estado" value="#{guiaCtrl.estadoCorrente(guia)}"/>
+            </p:column>
+            <p:column headerText="Emissão" width="100" styleClass="left-align" sortBy="#{guia.dataEmissao}">
+              <h:outputText value="#{guia.dataEmissao}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+              </h:outputText>
+            </p:column>
+            <p:column headerText="Tipo" width="75" styleClass="left-align">
+              <h:outputText value="#{guia.tipo.label}"/>
+            </p:column>
+            <p:column styleClass="center-align" width="75">
+              <p:menuButton id="menuButton" value="Ações">
+                <p:menuitem value="Enviar" action="#{guiaCtrl.enviar(guia)}"
+                            ajax="true" process="@this" update="estado, menuButton"
+                            icon="fa fa-send" disabled="#{guiaCtrl.disableEnviar(guia)}"/>
+                <p:menuitem value="Receber" action="#{guiaCtrl.receber(guia)}"
+                            ajax="true" process="@this" update="estado, menuButton"
+                            icon="fa fa-thumbs-up" disabled="#{guiaCtrl.disableReceber(guia)}"/>
+                <p:separator/>
+                <p:menuitem value="Recusada" actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
+                            oncomplete="PF('negarDlg').show()"
+                            icon="fa fa-ban"
+                            disabled="#{guiaCtrl.disableNegar(guia)}"/>
+
+              </p:menuButton>
+            </p:column>
+          </p:dataTable>
+        </h:panelGroup>
+        <h:panelGroup id="modalWrapper">
+          <ui:include src="modal.xhtml"/>
+        </h:panelGroup>
       </p:panel>
+
+      <h:panelGroup id="negarDlgWrapper">
+        <p:dialog id="negarDlg" widgetVar="negarDlg" modal="true" header="Motivo da recusa">
+          <h:panelGrid id="negarDlgGrid" columns="1">
+            <p:outputLabel value="Motivo" for="motivoNegar"/>
+            <p:inputTextarea id="motivoNegar" value="#{guiaCtrl.motivo}" maxlength="150"/>
+          </h:panelGrid>
+          <f:facet name="footer">
+            <p:commandButton value="Salvar" ajax="true"
+                             action="#{guiaCtrl.negar}" process="@this negarDlgGrid"
+                             update="listWrapper negarDlgGrid"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) PF('negarDlg').hide()"/>
+            <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('negarDlg').hide();"
+                             styleClass="margin-left"/>
+          </f:facet>
+        </p:dialog>
+      </h:panelGroup>
     </h:form>
   </ui:define>
+
+  <!--
+                <p:menuitem value="Negado" actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
+                            oncomplete="PF('negarDlg').show()"
+                            icon="fa fa-ban"
+                            disabled="#{guiaCtrl.disableNegado(guia)}"/>
+                <p:menuitem value="Aut. Parcial"
+                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            ajax="true" process="@this" update="#{p:component('parcialDlgWrapper')}"
+                            oncomplete="PF('parcialDlg').show()"
+                            icon="fa fa-check-circle"
+                            disabled="#{guiaCtrl.disableParcial(guia)}"/>
+                <p:menuitem value="Autorizado" actionListener="#{guiaCtrl.autorizar(guia)}"
+                            ajax="true" process="@this" update="estado, menuButton"
+                            icon="fa fa-check"
+                            disabled="#{guiaCtrl.disableAutorizar(guia)}"/>
+                <p:separator />
+                <p:menuitem value="Histórico" action="#{guiaCtrl.preOpenModal(guia)}"
+                            process="@this" update="#{p:component('historicoDlg')}"
+                            oncomplete="PF('historicoDlg').show()"
+                            icon="fa fa-tags"/>
+                <p:menuitem value="Comentar" action="#{guiaCtrl.preOpenModal(guia)}"
+                            process="@this" update="#{p:component('comentarDlgWrapper')}"
+                            oncomplete="PF('comentarDlg').show()"
+                            icon="fa fa-comment"/>
+                <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia)}"
+                            process="@this" update="#{p:component('comentarioDlgWrapper')}"
+                            oncomplete="PF('comentarioDlg').show()"
+                            icon="fa fa-comments"/>
+                <p:menuitem value="Cancelar" action="#{guiaCtrl.preDelete(guia.id, index)}"
+                            process="@this" update="#{p:component('deleteDlg')}"
+                            oncomplete="PF('deleteDlg').show()"
+                            disabled="#{guiaCtrl.disableCancelar(guia)}"
+                            icon="fa fa-trash"/>
+              -->
 </ui:composition>

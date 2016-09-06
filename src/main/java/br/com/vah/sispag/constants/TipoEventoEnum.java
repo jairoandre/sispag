@@ -6,9 +6,12 @@ package br.com.vah.sispag.constants;
 public enum TipoEventoEnum {
   CRIACAO,
   MOVIMENTACAO,
-  CANCELAMENTO,
-  RESPOSTA,
-  PENDENTE,
+  RECEBIMENTO,
+  COMENTARIO,
   AUTORIZADO,
-  NEGADO;
+  AUTORIZADO_PARCIAL,
+  NEGADO,
+  DEVOLUCAO,
+  RESPOSTA,
+  CANCELADO
 }

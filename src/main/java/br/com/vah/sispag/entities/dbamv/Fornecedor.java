@@ -11,11 +11,6 @@ import javax.persistence.Table;
 @Table(name = "FORNECEDOR", schema = "DBAMV")
 public class Fornecedor extends BaseEntity {
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 1L;
-
   @Id
   @Column(name = "CD_FORNECEDOR")
   private Long id;

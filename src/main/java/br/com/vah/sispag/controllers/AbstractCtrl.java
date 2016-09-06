@@ -142,6 +142,18 @@ public abstract class AbstractCtrl<T extends BaseEntity> implements Serializable
     this.editing = false;
   }
 
+  public void addInfoMsg(String message) {
+    addMsg(new FacesMessage(FacesMessage.SEVERITY_INFO, "Informação", message), false);
+  }
+
+  public void addErrorMsg(Exception e) {
+    addErrorMsg(String.format("%s: %s", "Erro inesperado", e.getMessage()));
+  }
+
+  public void addErrorMsg(String message) {
+    addMsg(new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", message), false);
+  }
+
   public void addMsg(FacesMessage msg, boolean flash) {
     FacesContext ctx = FacesContext.getCurrentInstance();
     ctx.addMessage(null, msg);
