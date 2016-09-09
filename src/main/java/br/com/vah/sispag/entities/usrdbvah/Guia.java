@@ -1,5 +1,6 @@
 package br.com.vah.sispag.entities.usrdbvah;
 
+import br.com.vah.sispag.constants.EstadoGuiaEnum;
 import br.com.vah.sispag.constants.TipoGuiaEnum;
 import br.com.vah.sispag.entities.BaseEntity;
 import br.com.vah.sispag.entities.dbamv.Convenio;
@@ -34,6 +35,10 @@ public class Guia extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "CD_PRESTADOR")
   private Prestador prestador;
+
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "CD_ESTADO")
+  private EstadoGuiaEnum estado = EstadoGuiaEnum.PENDENTE;
 
   @Column(name = "CD_GUIA")
   private String numeroGuia;
@@ -85,6 +90,14 @@ public class Guia extends BaseEntity {
 
   public void setPrestador(Prestador prestador) {
     this.prestador = prestador;
+  }
+
+  public EstadoGuiaEnum getEstado() {
+    return estado;
+  }
+
+  public void setEstado(EstadoGuiaEnum estado) {
+    this.estado = estado;
   }
 
   public Convenio getConvenio() {

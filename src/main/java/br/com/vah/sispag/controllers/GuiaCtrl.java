@@ -15,6 +15,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -132,6 +133,16 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     }
   }
 
+  public void autorizar(Guia guia) {
+    try {
+      guia = service.autorizar(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("Guia autorizada com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
   public void negar() {
     try {
       Guia guia = service.negar(getItem(), sessionCtrl.getUser(), motivo);
@@ -142,8 +153,24 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     }
   }
 
-  public Boolean disableEnviar(Guia guia) {
-    return service.disableEnviar(guia, sessionCtrl.getUser());
+  public void parcial() {
+    try {
+      Guia guia = service.parcial(getItem(), sessionCtrl.getUser(), motivo);
+      service.update(guia);
+      addInfoMsg("Autorização parcial com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void cancelar() {
+    try {
+      Guia guia = service.cancelar(getItem(), sessionCtrl.getUser(), motivo);
+      service.update(guia);
+      addInfoMsg("Guia cancelada com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
   }
 
   public void receber(Guia guia) {
@@ -156,12 +183,34 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     }
   }
 
+
+  public List<Evento> comentariosGuia() {
+    return service.comentariosGuia(getItem());
+  }
+
+
   public Boolean disableReceber(Guia guia) {
     return service.disableReceber(guia, sessionCtrl.getUser());
   }
 
+  public Boolean disableAutorizar(Guia guia) {
+    return service.disableAutorizar(guia, sessionCtrl.getUser());
+  }
+
   public Boolean disableNegar(Guia guia) {
     return service.disableNegar(guia, sessionCtrl.getUser());
+  }
+
+  public Boolean disableParcial(Guia guia) {
+    return service.disableParcial(guia, sessionCtrl.getUser());
+  }
+
+  public Boolean disableEnviar(Guia guia) {
+    return service.disableEnviar(guia, sessionCtrl.getUser());
+  }
+
+  public Boolean disableCancelar(Guia guia) {
+    return service.disableCancelar(guia, sessionCtrl.getUser());
   }
 
   public String getMotivo() {

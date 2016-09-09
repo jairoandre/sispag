@@ -11,7 +11,8 @@
         <p:commandButton value="Nova Guia" action="#{guiaCtrl.preOpenModal}" styleClass="margin-left" ajax="true"
                          process="@this" update="modalWrapper" oncomplete="PF('modal').show();"/>
         <h:panelGroup id="listWrapper" style="margin-top: 5px;" layout="block">
-          <p:dataTable value="#{guiaCtrl.lazyModel}" var="guia" sortBy="#{guia.id}" sortOrder="descending" paginator="true" emptyMessage="Sem registros"
+          <p:dataTable value="#{guiaCtrl.lazyModel}" var="guia" sortBy="#{guia.id}" sortOrder="descending"
+                       paginator="true" emptyMessage="Sem registros"
                        styleClass="table-left-header"
                        paginatorPosition="bottom" rows="25" rowKey="index" rowIndexVar="indexVar"
                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -28,7 +29,7 @@
                              oncomplete="PF('modal').show();"/>
             </p:column>
             <p:column headerText="Estado" width="100" styleClass="left-align">
-              <h:outputText id="estado" value="#{guiaCtrl.estadoCorrente(guia)}"/>
+              <h:outputText id="estado" value="#{guia.estado}"/>
             </p:column>
             <p:column headerText="Emissão" width="100" styleClass="left-align" sortBy="#{guia.dataEmissao}">
               <h:outputText value="#{guia.dataEmissao}">
@@ -38,7 +39,7 @@
             <p:column headerText="Tipo" width="75" styleClass="left-align">
               <h:outputText value="#{guia.tipo.label}"/>
             </p:column>
-            <p:column styleClass="center-align" width="75">
+            <p:column styleClass="center-align" width="85">
               <p:menuButton id="menuButton" value="Ações">
                 <p:menuitem value="Enviar" action="#{guiaCtrl.enviar(guia)}"
                             ajax="true" process="@this" update="estado, menuButton"
@@ -46,13 +47,37 @@
                 <p:menuitem value="Receber" action="#{guiaCtrl.receber(guia)}"
                             ajax="true" process="@this" update="estado, menuButton"
                             icon="fa fa-thumbs-up" disabled="#{guiaCtrl.disableReceber(guia)}"/>
+                <p:menuitem value="Cancelar"
+                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            ajax="true" process="@this" update="#{p:component('cancelarDlgWrapper')}"
+                            oncomplete="PF('cancelarDlg').show()"
+                            icon="fa fa-trash"
+                            disabled="#{guiaCtrl.disableCancelar(guia)}"/>
                 <p:separator/>
+                <p:menuitem value="Autorizada" actionListener="#{guiaCtrl.autorizar(guia)}"
+                            ajax="true" process="@this" update="estado, menuButton"
+                            icon="fa fa-check"
+                            disabled="#{guiaCtrl.disableAutorizar(guia)}"/>
+                <p:menuitem value="Aut. Parcial"
+                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            ajax="true" process="@this" update="#{p:component('parcialDlgWrapper')}"
+                            oncomplete="PF('parcialDlg').show()"
+                            icon="fa fa-check-circle"
+                            disabled="#{guiaCtrl.disableParcial(guia)}"/>
                 <p:menuitem value="Recusada" actionListener="#{guiaCtrl.preOpenModal(guia)}"
                             ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
                             oncomplete="PF('negarDlg').show()"
                             icon="fa fa-ban"
                             disabled="#{guiaCtrl.disableNegar(guia)}"/>
-
+                <p:separator/>
+                <p:menuitem value="Histórico" action="#{guiaCtrl.preOpenModal(guia)}"
+                            process="@this" update="#{p:component('historicoDlgWrapper')}"
+                            oncomplete="PF('historicoDlg').show()"
+                            icon="fa fa-tags"/>
+                <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia)}"
+                            process="@this" update="#{p:component('comentariosDlgWrapper')}"
+                            oncomplete="PF('comentariosDlg').show()"
+                            icon="fa fa-comments"/>
               </p:menuButton>
             </p:column>
           </p:dataTable>
@@ -63,10 +88,9 @@
       </p:panel>
 
       <h:panelGroup id="negarDlgWrapper">
-        <p:dialog id="negarDlg" widgetVar="negarDlg" modal="true" header="Motivo da recusa">
-          <h:panelGrid id="negarDlgGrid" columns="1">
-            <p:outputLabel value="Motivo" for="motivoNegar"/>
-            <p:inputTextarea id="motivoNegar" value="#{guiaCtrl.motivo}" maxlength="150"/>
+        <p:dialog id="negarDlg" widgetVar="negarDlg" modal="true" width="300" header="MOTIVO DA RECUSA">
+          <h:panelGrid id="negarDlgGrid">
+            <p:inputTextarea id="motivoNegar" value="#{guiaCtrl.motivo}" maxlength="150" cols="35"/>
           </h:panelGrid>
           <f:facet name="footer">
             <p:commandButton value="Salvar" ajax="true"
@@ -75,41 +99,110 @@
                              oncomplete="if (args &amp;&amp; !args.validationFailed) PF('negarDlg').hide()"/>
             <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('negarDlg').hide();"
                              styleClass="margin-left"/>
+
           </f:facet>
         </p:dialog>
       </h:panelGroup>
+
+      <h:panelGroup id="cancelarDlgWrapper">
+        <p:dialog id="cancelarDlg" widgetVar="cancelarDlg" modal="true" width="300" header="MOTIVO DO CANCELAMENTO">
+          <h:panelGrid id="cancelarDlgGrid">
+            <p:inputTextarea id="motivoCancelar" value="#{guiaCtrl.motivo}" maxlength="150" cols="35" required="true"/>
+          </h:panelGrid>
+          <f:facet name="footer">
+            <p:commandButton value="Salvar" ajax="true"
+                             action="#{guiaCtrl.cancelar}" process="@this cancelarDlgGrid"
+                             update="listWrapper cancelarDlgGrid"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) PF('cancelarDlg').hide()"/>
+            <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('cancelarDlg').hide();"
+                             styleClass="margin-left"/>
+
+          </f:facet>
+        </p:dialog>
+      </h:panelGroup>
+
+      <h:panelGroup id="parcialDlgWrapper">
+        <p:dialog id="parcialDlg" widgetVar="parcialDlg" modal="true" width="300" header="AUTORIZAÇÃO PARCIAL">
+          <h:panelGrid id="parcialDlgGrid">
+            <p:inputTextarea id="motivoParcial" value="#{guiaCtrl.motivo}" maxlength="150" cols="35"/>
+          </h:panelGrid>
+          <f:facet name="footer">
+            <p:commandButton value="Salvar" ajax="true"
+                             action="#{guiaCtrl.parcial}" process="@this parcialDlgGrid"
+                             update="listWrapper parcialDlgGrid"
+                             oncomplete="if (args &amp;&amp; !args.validationFailed) PF('parcialDlg').hide()"/>
+            <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('parcialDlg').hide();"
+                             styleClass="margin-left"/>
+
+          </f:facet>
+        </p:dialog>
+      </h:panelGroup>
+
+      <h:panelGroup id="historicoDlgWrapper">
+        <p:dialog id="historicoDlg" widgetVar="historicoDlg"
+                  width="600" modal="true" header="HISTÓRICO">
+          <p:dataTable value="#{guiaCtrl.item.eventos}" var="evento"
+                       sortBy="#{evento.dataEvento}" sortOrder="descending"
+                       lazy="true" rendered="#{not empty guiaCtrl.item.eventos}">
+            <p:column headerText="Evento" styleClass="left-align" width="100">
+              <h:outputText value="#{evento.tipo}"/>
+            </p:column>
+            <p:column headerText="Usuário" width="125" styleClass="left-align">
+              <h:outputText value="#{evento.usuario.login}"/>
+            </p:column>
+            <p:column headerText="Data" styleClass="left-align" width="100">
+              <h:outputText value="#{evento.dataEvento}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+              </h:outputText>
+            </p:column>
+          </p:dataTable>
+          <f:facet name="footer">
+            <p:commandButton value="Fechar" ajax="true" process="@this" oncomplete="PF('historicoDlg').hide();"
+                             styleClass="margin-left"/>
+
+          </f:facet>
+        </p:dialog>
+      </h:panelGroup>
+
+      <h:panelGroup id="comentariosDlgWrapper">
+        <p:dialog id="comentariosDlg" widgetVar="comentariosDlg"
+                  width="800"
+                  modal="true" header="Comentários">
+          <p:dataTable value="#{guiaCtrl.comentariosGuia()}" var="evento"
+                       sortBy="#{evento.dataEvento}" sortOrder="descending"
+                       lazy="true" emptyMessage="Sem comentários">
+            <p:column headerText="Evento" styleClass="left-align" width="100">
+              <h:outputText value="#{evento.tipo}"/>
+            </p:column>
+            <p:column headerText="Usuário" width="125" styleClass="left-align">
+              <h:outputText value="#{evento.usuario.login}"/>
+            </p:column>
+            <p:column headerText="Mensagem" width="300" styleClass="left-align">
+              <h:outputText value="#{evento.mensagem}"/>
+            </p:column>
+            <p:column headerText="Data" styleClass="left-align" width="100">
+              <h:outputText value="#{evento.dataEvento}">
+                <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+              </h:outputText>
+            </p:column>
+          </p:dataTable>
+          <f:facet name="footer">
+            <p:commandButton value="Fechar" ajax="true" process="@this" oncomplete="PF('comentariosDlg').hide();"
+                             styleClass="margin-left"/>
+
+          </f:facet>
+        </p:dialog>
+      </h:panelGroup>
+
     </h:form>
   </ui:define>
 
   <!--
-                <p:menuitem value="Negado" actionListener="#{guiaCtrl.preOpenModal(guia)}"
-                            ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
-                            oncomplete="PF('negarDlg').show()"
-                            icon="fa fa-ban"
-                            disabled="#{guiaCtrl.disableNegado(guia)}"/>
-                <p:menuitem value="Aut. Parcial"
-                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
-                            ajax="true" process="@this" update="#{p:component('parcialDlgWrapper')}"
-                            oncomplete="PF('parcialDlg').show()"
-                            icon="fa fa-check-circle"
-                            disabled="#{guiaCtrl.disableParcial(guia)}"/>
-                <p:menuitem value="Autorizado" actionListener="#{guiaCtrl.autorizar(guia)}"
-                            ajax="true" process="@this" update="estado, menuButton"
-                            icon="fa fa-check"
-                            disabled="#{guiaCtrl.disableAutorizar(guia)}"/>
                 <p:separator />
-                <p:menuitem value="Histórico" action="#{guiaCtrl.preOpenModal(guia)}"
-                            process="@this" update="#{p:component('historicoDlg')}"
-                            oncomplete="PF('historicoDlg').show()"
-                            icon="fa fa-tags"/>
                 <p:menuitem value="Comentar" action="#{guiaCtrl.preOpenModal(guia)}"
                             process="@this" update="#{p:component('comentarDlgWrapper')}"
                             oncomplete="PF('comentarDlg').show()"
                             icon="fa fa-comment"/>
-                <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia)}"
-                            process="@this" update="#{p:component('comentarioDlgWrapper')}"
-                            oncomplete="PF('comentarioDlg').show()"
-                            icon="fa fa-comments"/>
                 <p:menuitem value="Cancelar" action="#{guiaCtrl.preDelete(guia.id, index)}"
                             process="@this" update="#{p:component('deleteDlg')}"
                             oncomplete="PF('deleteDlg').show()"
