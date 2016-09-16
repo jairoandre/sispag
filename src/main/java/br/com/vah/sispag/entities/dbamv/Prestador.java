@@ -2,10 +2,8 @@ package br.com.vah.sispag.entities.dbamv;
 
 import br.com.vah.sispag.entities.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by jairoportela on 02/09/2016.
@@ -26,6 +24,11 @@ public class Prestador extends BaseEntity {
 
   @Column(name = "NR_CPF_CGC")
   private String cpf;
+
+  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+  @JoinTable(name = "ESP_MED", joinColumns = {
+      @JoinColumn(name = "CD_PRESTADOR")}, inverseJoinColumns = {@JoinColumn(name = "CD_ESPECIALID")}, schema = "DBAMV")
+  private Set<Especialidade> especialidades;
 
   public Long getId() {
     return id;
@@ -57,6 +60,14 @@ public class Prestador extends BaseEntity {
 
   public void setCpf(String cpf) {
     this.cpf = cpf;
+  }
+
+  public Set<Especialidade> getEspecialidades() {
+    return especialidades;
+  }
+
+  public void setEspecialidades(Set<Especialidade> especialidades) {
+    this.especialidades = especialidades;
   }
 
   @Override

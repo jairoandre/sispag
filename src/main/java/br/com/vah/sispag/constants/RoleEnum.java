@@ -8,8 +8,7 @@ public enum RoleEnum {
   USUARIO("Usuário"),
   RECEPCAO("Recepção", USUARIO),
   CIRURGICO("Cirúrgico", USUARIO),
-  POS_INTERNACAO("Pós Internação", USUARIO),
-  ADMINISTRADOR("Administrador", CIRURGICO, RECEPCAO, POS_INTERNACAO);
+  ADMINISTRADOR("Administrador", CIRURGICO, RECEPCAO);
 
   private String label;
   private RoleEnum[] subroles;

@@ -10,7 +10,8 @@ import java.util.List;
 public enum TipoGuiaEnum {
   INTERNACAO("Internação"),
   SADT("SADT"),
-  OPME("OPME");
+  OPME("OPME"),
+  MATERIAL("Mat. Estoque");
 
   private String label;
 

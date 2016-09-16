@@ -1,20 +1,19 @@
 package br.com.vah.sispag.entities.usrdbvah;
 
 import br.com.vah.sispag.entities.BaseEntity;
-import br.com.vah.sispag.entities.dbamv.ProFat;
 
 import javax.persistence.*;
 
 /**
- * Created by jairoportela on 01/09/2016.
+ * Created by jairoportela on 13/09/2016.
  */
 @Entity
-@Table(name = "TB_SISPAG_IT_GUIA", schema = "USRDBVAH")
-public class ItemGuia extends BaseEntity {
+@Table(name = "TB_SISPAG_ANEXO", schema = "USRDBVAH")
+public class Anexo extends BaseEntity {
 
   @Id
-  @SequenceGenerator(name = "seqItemGuia", sequenceName = "SEQ_SISPAG_IT_GUIA", schema = "USRDBVAH", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqItemGuia")
+  @SequenceGenerator(name = "seqAnexo", sequenceName = "SEQ_SISPAG_ANEXO", schema = "USRDBVAH", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqAnexo")
   @Column(name = "ID")
   private Long id;
 
@@ -22,13 +21,14 @@ public class ItemGuia extends BaseEntity {
   @JoinColumn(name = "ID_GUIA")
   private Guia guia;
 
-  @Column(name = "NM_NOME")
+  @Column(name = "NM_ANEXO")
   private String nome;
 
-  @Column(name = "VL_QUANTIDADE")
-  private Integer quantidade = 1;
+  @Lob
+  @Column(name = "VL_ARQUIVO")
+  private byte[] arquivo;
 
-  public Long getId() {
+    public Long getId() {
     return id;
   }
 
@@ -52,12 +52,16 @@ public class ItemGuia extends BaseEntity {
     this.nome = nome;
   }
 
-  public Integer getQuantidade() {
-    return quantidade;
+  public byte[] getArquivo() {
+    return arquivo;
   }
 
-  public void setQuantidade(Integer quantidade) {
-    this.quantidade = quantidade;
+  public void setArquivo(byte[] arquivo) {
+    this.arquivo = arquivo;
+  }
+
+  public Integer getTamanhoArquivo() {
+    return arquivo.length;
   }
 
   @Override

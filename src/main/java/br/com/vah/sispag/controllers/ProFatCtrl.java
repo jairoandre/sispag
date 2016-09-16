@@ -1,6 +1,5 @@
 package br.com.vah.sispag.controllers;
 
-import br.com.vah.sispag.entities.dbamv.Prestador;
 import br.com.vah.sispag.entities.dbamv.ProFat;
 import br.com.vah.sispag.service.AbstractSrv;
 import br.com.vah.sispag.service.ProFatSrv;
@@ -70,6 +69,16 @@ public class ProFatCtrl extends AbstractCtrl<ProFat> {
   @Override
   public List<ProFat> completeMethod(String query) {
     setItem(createNewItem());
-    return super.completeMethod(query);
+    setSearchTerm(query);
+    prepareSearch();
+    return getLazyModel().load(5);
+  }
+
+  public List<ProFat> completeMethodOPME(String query) {
+    setItem(createNewItem());
+    setSearchTerm(query);
+    prepareSearch();
+    setSearchParam("tipo", "OP");
+    return getLazyModel().load(5);
   }
 }

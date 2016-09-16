@@ -3,6 +3,7 @@ package br.com.vah.sispag.entities.dbamv;
 import br.com.vah.sispag.entities.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by jairoportela on 01/09/2016.
@@ -24,6 +25,10 @@ public class ProFat extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "CD_GRU_PRO")
   private GruPro gruPro;
+
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "CD_PRO_FAT", insertable = false, updatable = false)
+  private Set<ProFatHierarquizado> hierarquia;
 
   public String getId() {
     return id;
@@ -55,6 +60,21 @@ public class ProFat extends BaseEntity {
 
   public void setGruPro(GruPro gruPro) {
     this.gruPro = gruPro;
+  }
+
+  public Set<ProFatHierarquizado> getHierarquia() {
+    return hierarquia;
+  }
+
+  public void setHierarquia(Set<ProFatHierarquizado> hierarquia) {
+    this.hierarquia = hierarquia;
+  }
+
+  public String getCbhpm() {
+    if (hierarquia != null && !hierarquia.isEmpty()) {
+      return hierarquia.iterator().next().getId().getCbhpm();
+    }
+    return id;
   }
 
   @Override

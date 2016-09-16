@@ -2,182 +2,310 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:vah="http://java.sun.com/jsf/composite/vah">
-
-  <p:dialog id="modal" widgetVar="modal" height="400" header="GUIA" modal="true">
+                xmlns:f="http://java.sun.com/jsf/core">
+  <p:dialog id="modal" widgetVar="modal" height="400" header="Guia" modal="true" width="1000" position="top"
+            styleClass="margin-top">
     <h:panelGroup id="content" layout="block">
-      <p:panelGrid id="modalGrid">
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Tipo de Guia:" for="tipo"/>
-          </p:column>
-          <p:column>
-            <p:selectOneMenu id="tipo" required="true" value="#{guiaCtrl.item.tipo}">
-              <f:selectItems value="#{guiaCtrl.tipos}"/>
-            </p:selectOneMenu>
-          </p:column>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Convênio:" for="convenioAutoComplete"/>
-          </p:column>
-          <p:column>
-            <p:autoComplete id="convenioAutoComplete" value="#{guiaCtrl.item.convenio}"
-                            queryDelay="200"
-                            var="item"
-                            itemLabel="#{item['nome']}"
-                            itemValue="#{item}"
-                            onclick="this.setSelectionRange(0, this.value.length)"
-                            converter="#{convenioConverter}"
-                            inputStyleClass="vah-input"
-                            completeMethod="#{convenioCtrl.completeMethod}"
-                            placeholder="Nome..."
-                            required="true">
-              <p:ajax event="itemSelect" process="@this" update="#{p:component('registroAns')}"/>
-            </p:autoComplete>
-          </p:column>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Nº. Guia:" for="numeroGuia"/>
-          </p:column>
-          <p:column>
-            <p:inputText id="numeroGuia" value="#{guiaCtrl.item.numeroGuia}" required="true"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Registro ANS:"/>
-          </p:column>
-          <p:column>
-            <h:panelGroup id="registroAns">
-              <p:inputText value="#{guiaCtrl.item.convenio.codigoAns}" rendered="#{not empty guiaCtrl.item.convenio}"
-                           readonly="true"/>
-              <p:inputText value="-" rendered="#{empty guiaCtrl.item.convenio}" readonly="true"/>
-            </h:panelGroup>
-          </p:column>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Nº. Solic.:" for="numeroSolicitacao"/>
-          </p:column>
-          <p:column>
-            <p:inputText id="numeroSolicitacao" value="#{guiaCtrl.item.numeroSolicitacao}" required="true"/>
-          </p:column>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Emissão:" for="dataEmissao"/>
-          </p:column>
-          <p:column>
-            <p:calendar id="dataEmissao" value="#{guiaCtrl.item.dataEmissao}" pattern="dd/MM/yyyy" required="true"
-                        mask="true" locale="pt_BR"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column colspan="6" styleClass="ui-widget-header">
-            <h:outputText value="DADOS DO BENEFICIÁRIO"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Nº. Carteira:"/>
-          </p:column>
-          <p:column>
-            <p:inputText value="#{guiaCtrl.item.cartao}"/>
-          </p:column>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="CNES:"/>
-          </p:column>
-          <p:column colspan="3">
-            <p:inputText value="#{guiaCtrl.item.cnes}"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Nome:" for="nomePaciente"/>
-          </p:column>
-          <p:column colspan="5">
-            <p:inputText id="nomePaciente" value="#{guiaCtrl.item.paciente}" style="width: 450px;" required="true"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column colspan="6" styleClass="ui-widget-header">
-            <h:outputText value="DADOS DO CONTRATADO EXECUTANTE"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Prestador:" for="prestadorAutoComplete"/>
-          </p:column>
-          <p:column colspan="5">
-            <p:autoComplete id="prestadorAutoComplete" value="#{guiaCtrl.item.prestador}"
-                            queryDelay="200"
-                            var="item"
-                            itemLabel="#{item['nome']}"
-                            itemValue="#{item}"
-                            onclick="this.setSelectionRange(0, this.value.length)"
-                            converter="#{prestadorConverter}"
-                            inputStyleClass="vah-input"
-                            completeMethod="#{prestadorCtrl.completeMethod}"
-                            placeholder="Nome..."
-                            required="true">
-              <p:ajax event="itemSelect" process="@this" update="#{p:component('cpfPrestador')}"/>
-            </p:autoComplete>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Cód./CNPJ/CPF:"/>
-          </p:column>
-          <p:column colspan="5">
-            <h:panelGroup id="cpfPrestador">
-              <p:inputText value="#{guiaCtrl.item.prestador.cpf}" rendered="#{not empty guiaCtrl.item.prestador}"
-                           readonly="true"/>
-              <p:inputText value="-" rendered="#{empty guiaCtrl.item.prestador}" readonly="true"/>
-            </h:panelGroup>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column colspan="6" styleClass="ui-widget-header">
-            <h:outputText value="PROCEDIMENTOS/OPME"/>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column style="font-weight: bold;">
-            <p:outputLabel value="Item:"/>
-          </p:column>
-          <p:column colspan="5">
-            <p:autoComplete id="proFatAutoComplete" value="#{guiaCtrl.proFatToAdd}"
-                            queryDelay="200"
-                            var="item"
-                            itemLabel="#{item['id']} - #{item['nome']}"
-                            itemValue="#{item}"
-                            onclick="this.setSelectionRange(0, this.value.length);"
-                            converter="#{proFatConverter}"
-                            inputStyleClass="vah-input"
-                            inputStyle="width: 500px;"
-                            completeMethod="#{proFatCtrl.completeMethod}"
-                            placeholder="Nome...">
-              <p:ajax event="itemSelect" process="@this" update="#{p:component('proFatItens')} proFatAutoComplete"
-                      listener="#{guiaCtrl.onProFatSelect}"/>
-            </p:autoComplete>
-          </p:column>
-        </p:row>
-        <p:row>
-          <p:column colspan="6">
-            <h:panelGroup id="proFatItens" layout="block">
-              <ui:repeat value="#{guiaCtrl.item.itens.toArray()}" var="item">
-                <h:panelGroup layout="block" style="padding: 5px 5px 0;">
-                  <p:commandButton value="#{item.nome}" action="#{guiaCtrl.removeItemGuia(item)}" process="@this"
-                                   update="#{p:component('proFatItens')}" icon="fa fa-ban"/>
+      <p:tabView>
+        <p:tab title="Guia">
+          <p:panelGrid id="modalGrid" style="width: 100%;">
+            <p:row>
+              <p:column colspan="6" style="font-weight: bold; font-style: oblique;">
+                <h:outputText value="DADOS DA GUIA"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Tipo:" for="tipo"/>
+              </p:column>
+              <p:column>
+                <p:selectOneMenu id="tipo" required="true" value="#{guiaCtrl.item.tipo}" rendered="#{guiaCtrl.editing}">
+                  <p:ajax event="itemSelect" listener="#{guiaCtrl.onChangeTipo}" process="@this"
+                          update="#{p:component('procedimentosTab')} comboItem"/>
+                  <f:selectItems value="#{guiaCtrl.tipos}"/>
+                </p:selectOneMenu>
+                <h:outputText value="#{guiaCtrl.item.tipo.label}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Convênio:" for="convenioAutoComplete"/>
+              </p:column>
+              <p:column>
+                <p:autoComplete id="convenioAutoComplete" value="#{guiaCtrl.item.convenio}"
+                                queryDelay="200"
+                                var="item"
+                                itemLabel="#{item['nome']}"
+                                itemValue="#{item}"
+                                onclick="this.setSelectionRange(0, this.value.length)"
+                                converter="#{convenioConverter}"
+                                inputStyleClass="vah-input"
+                                completeMethod="#{convenioCtrl.completeMethod}"
+                                placeholder="Nome..."
+                                rendered="#{guiaCtrl.editing}"
+                                required="true">
+                  <p:ajax event="change" process="@this" update="#{p:component('registroAns')}"/>
+                  <p:ajax event="itemSelect" process="@this" update="#{p:component('registroAns')}"/>
+                </p:autoComplete>
+                <h:outputText value="#{guiaCtrl.item.convenio.nome}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Núm.:" for="numeroGuia"/>
+              </p:column>
+              <p:column>
+                <p:inputText id="numeroGuia" value="#{guiaCtrl.item.numeroGuia}" required="true"
+                             rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroGuia}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="ANS:"/>
+              </p:column>
+              <p:column>
+                <h:panelGroup id="registroAns">
+                  <h:panelGroup rendered="#{guiaCtrl.editing}">
+                    <p:inputText value="#{guiaCtrl.item.convenio.codigoAns}"
+                                 rendered="#{not empty guiaCtrl.item.convenio}"
+                                 readonly="true"/>
+                    <p:inputText value="-" rendered="#{empty guiaCtrl.item.convenio}" readonly="true"/>
+                  </h:panelGroup>
+                  <h:outputText value="#{guiaCtrl.item.convenio.codigoAns}" rendered="#{not guiaCtrl.editing}"/>
                 </h:panelGroup>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Protoc.:" for="numeroSolicitacao"/>
+              </p:column>
+              <p:column>
+                <p:inputText id="numeroSolicitacao" value="#{guiaCtrl.item.numeroSolicitacao}" required="true"
+                             rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroSolicitacao}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Senha:" for="senha"/>
+              </p:column>
+              <p:column>
+                <p:inputText id="senha" value="#{guiaCtrl.item.senha}" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.senha}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Emissão:" for="dataEmissao"/>
+              </p:column>
+              <p:column>
+                <p:calendar id="dataEmissao" value="#{guiaCtrl.item.dataEmissao}" pattern="dd/MM/yyyy" required="true"
+                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.dataEmissao}" rendered="#{not guiaCtrl.editing}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
+                </h:outputText>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Entrega:" for="dataEntrega"/>
+              </p:column>
+              <p:column>
+                <p:calendar id="dataEntrega" value="#{guiaCtrl.item.dataEntrega}" pattern="dd/MM/yyyy" required="true"
+                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.dataEntrega}" rendered="#{not guiaCtrl.editing}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
+                </h:outputText>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Resposta:" for="dataResposta"/>
+              </p:column>
+              <p:column>
+                <p:calendar id="dataResposta" value="#{guiaCtrl.item.dataResposta}" pattern="dd/MM/yyyy"
+                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.dataResposta}" rendered="#{not guiaCtrl.editing}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
+                </h:outputText>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column colspan="6" style="font-weight: bold; font-style: oblique;">
+                <h:outputText value="DADOS DO BENEFICIÁRIO"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Nº. Cartão:"/>
+              </p:column>
+              <p:column>
+                <p:inputText value="#{guiaCtrl.item.cartao}" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.cartao}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Telefone:"/>
+              </p:column>
+              <p:column colspan="3">
+                <p:inputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Nome:" for="nomePaciente"/>
+              </p:column>
+              <p:column colspan="5">
+                <p:inputText id="nomePaciente" value="#{guiaCtrl.item.paciente}" style="width: 500px;" required="true"
+                             rendered="#{guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.paciente}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column colspan="6" style="font-weight: bold; font-style: oblique;">
+                <h:outputText value="DADOS DO CONTRATADO EXECUTANTE"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Prestador:" for="prestadorAutoComplete"/>
+              </p:column>
+              <p:column colspan="5">
+                <p:autoComplete id="prestadorAutoComplete" value="#{guiaCtrl.item.prestador}"
+                                queryDelay="200"
+                                var="item"
+                                itemLabel="#{item['nome']}"
+                                itemValue="#{item}"
+                                onclick="this.setSelectionRange(0, this.value.length)"
+                                converter="#{prestadorConverter}"
+                                inputStyleClass="vah-input"
+                                inputStyle="width: 500px;"
+                                completeMethod="#{prestadorCtrl.completeMethod}"
+                                placeholder="Nome..."
+                                required="true"
+                                rendered="#{guiaCtrl.editing}">
+                  <p:ajax event="itemSelect" process="@this"
+                          update="#{p:component('cpfPrestador')} #{p:component('especialidadesPnl')}"/>
+                </p:autoComplete>
+                <h:outputText value="#{guiaCtrl.item.prestador.nome}" rendered="#{not guiaCtrl.editing}"/>
+              </p:column>
+            </p:row>
+            <p:row>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="CPF:"/>
+              </p:column>
+              <p:column>
+                <h:panelGroup id="cpfPrestador">
+                  <h:panelGroup rendered="#{guiaCtrl.editing}">
+                    <p:inputText value="#{guiaCtrl.item.prestador.cpf}" rendered="#{not empty guiaCtrl.item.prestador}"
+                                 readonly="true" converter="#{cpfStringCvt}"/>
+                    <p:inputText value="" rendered="#{empty guiaCtrl.item.prestador}" readonly="true"/>
+                  </h:panelGroup>
+                  <h:outputText value="#{guiaCtrl.item.prestador.cpf}" converter="#{cpfStringCvt}"
+                                rendered="#{not guiaCtrl.editing}"/>
+                </h:panelGroup>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Especialidades:"/>
+              </p:column>
+              <p:column colspan="3">
+                <h:panelGroup id="especialidadesPnl" layout="block">
+                  <ui:repeat value="#{guiaCtrl.item.prestador.especialidades.toArray()}" var="especialidade"
+                             varStatus="idx">
+                    <h:outputText value="#{especialidade.nome}"/>
+                    <h:outputText value=", " rendered="#{not idx.last}"/>
+                  </ui:repeat>
+                </h:panelGroup>
+              </p:column>
+            </p:row>
+          </p:panelGrid>
+        </p:tab>
+        <p:tab title="Itens">
+          <h:panelGroup id="procedimentosTab" style="height: 100%;">
+            <h:panelGroup id="comboItem">
+              <h:panelGroup rendered="#{guiaCtrl.editing}">
+                <p:autoComplete id="proFatAutoCompleteSADT" value="#{guiaCtrl.proFatToAdd}"
+                                queryDelay="200"
+                                var="item"
+                                itemLabel="#{item['cbhpm']}#{empty item['cbhpm'] ? '' : ' - '}#{item['nome']}"
+                                itemValue="#{item}"
+                                onclick="this.setSelectionRange(0, this.value.length);"
+                                converter="#{proFatConverter}"
+                                inputStyleClass="vah-input"
+                                inputStyle="width: 500px;"
+                                completeMethod="#{proFatCtrl.completeMethod}"
+                                rendered="#{guiaCtrl.item.tipo ne 'OPME'}"
+                                placeholder="CBHPM ou nome...">
+                  <p:ajax event="itemSelect" process="@this #{p:component('proFatItens')}"
+                          update="#{p:component('proFatItens')} proFatAutoCompleteSADT"
+                          listener="#{guiaCtrl.onProFatSelect}"/>
+                </p:autoComplete>
+                <p:autoComplete id="proFatAutoCompleteOPME" value="#{guiaCtrl.proFatToAdd}"
+                                queryDelay="200"
+                                var="item"
+                                itemLabel="#{item['cbhpm']}#{empty item['cbhpm'] ? '' : ' - '}#{item['nome']}"
+                                itemValue="#{item}"
+                                onclick="this.setSelectionRange(0, this.value.length);"
+                                converter="#{proFatConverter}"
+                                inputStyleClass="vah-input"
+                                inputStyle="width: 500px;"
+                                completeMethod="#{proFatCtrl.completeMethodOPME}"
+                                rendered="#{guiaCtrl.item.tipo eq 'OPME'}"
+                                placeholder="CBHPM ou nome...">
+                  <p:ajax event="itemSelect" process="@this #{p:component('proFatItens')}"
+                          update="#{p:component('proFatItens')} proFatAutoCompleteOPME"
+                          listener="#{guiaCtrl.onProFatSelect}"/>
+                </p:autoComplete>
+              </h:panelGroup>
+            </h:panelGroup>
+            <h:panelGroup id="proFatItens" layout="block" styleClass="margin-top">
+              <ui:repeat value="#{guiaCtrl.item.itens.toArray()}" var="item" varStatus="idx">
+                <h:panelGroup rendered="#{guiaCtrl.editing}">
+                  <p:spinner id="quantidade" value="#{item.quantidade}" label="Qtd." prefix="Qtd. " min="1"/>
+                  <p:commandButton value="#{item.nome}" action="#{guiaCtrl.removeItemGuia(item)}"
+                                   process="@this #{p:component('proFatItens')}"
+                                   update="#{p:component('proFatItens')}" icon="fa fa-ban"
+                                   styleClass="margin-left"/>
+                  <p:separator rendered="#{not idx.last}"/>
+                </h:panelGroup>
+                <h:outputText value="Qtd #{item.quantidade} - #{item.nome}" rendered="#{not guiaCtrl.editing}"/>
               </ui:repeat>
             </h:panelGroup>
-          </p:column>
-        </p:row>
-      </p:panelGrid>
+          </h:panelGroup>
+        </p:tab>
+        <p:tab title="Anexos">
+
+          <p:fileUpload skinSimple="true"
+                        label="Incluir anexo"
+                        uploadLabel="Submeter"
+                        cancelLabel="Cancelar"
+                        onstart="start()"
+                        oncomplete="stop()"
+                        update="anexosWrapper @this"
+                        rendered="#{guiaCtrl.editing}"
+                        fileUploadListener="#{guiaCtrl.uploadAnexo}"/>
+
+          <h:panelGroup id="anexosWrapper" layout="block" styleClass="margin-top">
+            <ui:repeat value="#{guiaCtrl.item.anexos.toArray()}" var="anexo" varStatus="idx">
+              <p:commandButton value="#{anexo.nome} (#{anexo.tamanhoArquivo} bytes)"
+                               ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" immediate="true"
+                               icon="fa fa-download">
+                <p:fileDownload value="#{guiaCtrl.download(anexo)}" contentDisposition="attachment"/>
+              </p:commandButton>
+              <p:commandButton icon="fa fa-trash" action="#{guiaCtrl.removerAnexo(anexo)}" ajax="true" process="@this"
+                               rendered="#{guiaCtrl.editing}" update="#{p:component('anexosWrapper')}"
+                               styleClass="margin-left"/>
+              <p:separator rendered="#{not idx.last}"/>
+            </ui:repeat>
+          </h:panelGroup>
+
+        </p:tab>
+      </p:tabView>
+
+
     </h:panelGroup>
     <f:facet name="footer">
-      <p:commandButton value="Salvar" ajax="true"
-                       action="#{guiaCtrl.doSave}" process="@this modalGrid"
-                       update="listWrapper modalGrid"
-                       oncomplete="if (args &amp;&amp; !args.validationFailed) PF('modal').hide()"/>
-      <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('modal').hide();"
-                       styleClass="margin-left"/>
+      <h:panelGroup rendered="#{guiaCtrl.editing}">
+        <p:commandButton value="Salvar" ajax="true"
+                         action="#{guiaCtrl.doSave}" process="@this content"
+                         update="listWrapper content"
+                         oncomplete="if (args &amp;&amp; !args.validationFailed) PF('modal').hide()"/>
+        <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('modal').hide();"
+                         styleClass="margin-left"/>
+      </h:panelGroup>
+      <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('modal').hide();" rendered="#{not guiaCtrl.editing}"/>
+
     </f:facet>
   </p:dialog>
+
+
 </ui:composition>

@@ -52,11 +52,17 @@ public class Guia extends BaseEntity {
   @Column(name = "DT_EMISSAO")
   private Date dataEmissao;
 
+  @Column(name = "DT_ENTREGA")
+  private Date dataEntrega;
+
+  @Column(name = "DT_RESPOSTA")
+  private Date dataResposta;
+
+  @Column(name = "NM_TELEFONE")
+  private String numeroTelefone;
+
   @Column(name = "NM_PACIENTE")
   private String paciente;
-
-  @Column(name = "CD_CNES")
-  private String cnes;
 
   @Column(name = "CD_CARTAO")
   private String cartao;
@@ -67,6 +73,9 @@ public class Guia extends BaseEntity {
   @OneToMany(mappedBy = "guia", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @OrderBy("dataEvento DESC")
   private Set<Evento> eventos = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "guia", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Set<Anexo> anexos = new LinkedHashSet<>();
 
   public Long getId() {
     return id;
@@ -84,6 +93,14 @@ public class Guia extends BaseEntity {
     this.tipo = tipo;
   }
 
+  public Convenio getConvenio() {
+    return convenio;
+  }
+
+  public void setConvenio(Convenio convenio) {
+    this.convenio = convenio;
+  }
+
   public Prestador getPrestador() {
     return prestador;
   }
@@ -98,14 +115,6 @@ public class Guia extends BaseEntity {
 
   public void setEstado(EstadoGuiaEnum estado) {
     this.estado = estado;
-  }
-
-  public Convenio getConvenio() {
-    return convenio;
-  }
-
-  public void setConvenio(Convenio convenio) {
-    this.convenio = convenio;
   }
 
   public String getNumeroGuia() {
@@ -132,6 +141,14 @@ public class Guia extends BaseEntity {
     this.senha = senha;
   }
 
+  public Date getDataEntrega() {
+    return dataEntrega;
+  }
+
+  public void setDataEntrega(Date dataEntrega) {
+    this.dataEntrega = dataEntrega;
+  }
+
   public Date getDataEmissao() {
     return dataEmissao;
   }
@@ -140,20 +157,28 @@ public class Guia extends BaseEntity {
     this.dataEmissao = dataEmissao;
   }
 
+  public Date getDataResposta() {
+    return dataResposta;
+  }
+
+  public void setDataResposta(Date dataResposta) {
+    this.dataResposta = dataResposta;
+  }
+
+  public String getNumeroTelefone() {
+    return numeroTelefone;
+  }
+
+  public void setNumeroTelefone(String numeroTelefone) {
+    this.numeroTelefone = numeroTelefone;
+  }
+
   public String getPaciente() {
     return paciente;
   }
 
   public void setPaciente(String paciente) {
     this.paciente = paciente;
-  }
-
-  public String getCnes() {
-    return cnes;
-  }
-
-  public void setCnes(String cnes) {
-    this.cnes = cnes;
   }
 
   public String getCartao() {
@@ -178,6 +203,14 @@ public class Guia extends BaseEntity {
 
   public void setEventos(Set<Evento> eventos) {
     this.eventos = eventos;
+  }
+
+  public Set<Anexo> getAnexos() {
+    return anexos;
+  }
+
+  public void setAnexos(Set<Anexo> anexos) {
+    this.anexos = anexos;
   }
 
   @Override
