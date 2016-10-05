@@ -6,6 +6,9 @@ import br.com.vah.sispag.controllers.SessionCtrl;
 import br.com.vah.sispag.constants.RestrictedViews;
 import br.com.vah.sispag.entities.dbamv.Setor;
 import br.com.vah.sispag.entities.usrdbvah.User;
+import br.com.vah.sispag.util.HibernateUtil;
+import org.hibernate.Hibernate;
+import org.hibernate.SessionFactory;
 
 
 import javax.inject.Inject;
@@ -73,6 +76,5 @@ public class AuthorizationPageFilter implements Filter {
   }
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
-  }
+  public void init(FilterConfig filterConfig) throws ServletException {}
 }

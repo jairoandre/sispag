@@ -6,14 +6,8 @@ package br.com.vah.sispag.constants;
 public enum TipoEventoEnum {
   CRIACAO("Criação"),
   COMENTARIO("Comentário"),
-  AUTORIZADO("Autorizado"),
-  AUTORIZADO_PARCIAL("Autor. Parcial"),
-  NEGADO("Negado"),
-  PENDENTE("Pendente"),
-  EM_ANALISE("Em análise"),
-  ALTERACAO("Alteração"),
-  LIBERACAO("Liberação"),
-  CANCELADO("Cancelado");
+  ATUALIZACAO("Atualização"),
+  STATUS("Status");
 
   private String label;
 

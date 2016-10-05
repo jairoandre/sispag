@@ -11,5 +11,5 @@ public enum GuiaFieldsEnum {
   RESPOSTA,
   ENTREGA,
   TIPO,
-  ESTADO
+  STATUS
 }

@@ -36,7 +36,16 @@ public class ProFatSrv extends AbstractSrv<ProFat> {
       disjunction.add(Restrictions.ilike("h.id.cbhpm", id, MatchMode.ANYWHERE));
       crit.createAlias("hierarquia", "h").add(disjunction);
     } else {
-      crit.createAlias("gruPro", "g").add(Restrictions.eq("g.tipo", "OP"));
+      crit.createAlias("gruPro", "g").add(Restrictions.in("g.id", new Long[]{8l, 9l,
+          72l,
+          84l,
+          85l,
+          86l,
+          7l,
+          78l,
+          77l,
+          80l,
+          75l}));
       crit.add(disjunction);
     }
     return crit;

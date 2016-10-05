@@ -20,7 +20,6 @@
         </f:facet>
 
         <p:commandButton id="filtros" value="Filtros" ajax="true" process="@this" icon="fa fa-search"/>
-
         <p:overlayPanel id="filtrosOverlay" widgetVar="filtrosOverlay" dismissable="false" for="filtros" showEffect="fade">
           <h:panelGrid id="overlayFields" columns="2" columnClasses="top-align, top-align">
             <h:panelGroup>
@@ -52,9 +51,21 @@
                                 completeMethod="#{convenioCtrl.completeMethod}"
                                 placeholder="Nome..." />
 
-                <p:outputLabel value="Estado:" styleClass="vah-label"/>
-                <p:selectOneMenu value="#{guiaCtrl.estado}" >
-                  <f:selectItems value="#{guiaCtrl.estadosForCombo}" var="item" itemLabel="#{item.label}"
+                <p:outputLabel value="Status:" styleClass="vah-label"/>
+                <p:selectOneMenu value="#{guiaCtrl.status}" >
+                  <f:selectItems value="#{guiaCtrl.statusForCombo}" var="item" itemLabel="#{item.label}"
+                                 itemValue="#{item}"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Status OPME:" styleClass="vah-label"/>
+                <p:selectOneMenu value="#{guiaCtrl.statusOpme}" >
+                  <f:selectItems value="#{guiaCtrl.statusForCombo}" var="item" itemLabel="#{item.label}"
+                                 itemValue="#{item}"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Status Mat.:" styleClass="vah-label"/>
+                <p:selectOneMenu value="#{guiaCtrl.statusMat}" >
+                  <f:selectItems value="#{guiaCtrl.statusForCombo}" var="item" itemLabel="#{item.label}"
                                  itemValue="#{item}"/>
                 </p:selectOneMenu>
 
@@ -128,6 +139,9 @@
                               rendered="#{guiaCtrl.entregaOp == 'BW'}"/>
                 </h:panelGroup>
 
+                <p:outputLabel value="Somente com OPME:" styleClass="vah-label"/>
+                <p:selectBooleanCheckbox value="#{guiaCtrl.sohOpme}"/>
+
               </h:panelGrid>
             </h:panelGroup>
           </h:panelGrid>
@@ -136,13 +150,12 @@
                            action="#{guiaCtrl.prepareSearch}" oncomplete="PF('filtrosOverlay').hide()"
                            update="listWrapper filtersWrapper"/>
         </p:overlayPanel>
-
-
         <p:commandButton value="Nova Guia" action="#{guiaCtrl.preOpenModal}" styleClass="margin-left" ajax="true"
                          process="@this" update="modalWrapper" oncomplete="PF('modal').show();"
-                         rendered="#{sessionCtrl.isUserInRoles('ADMINISTRADOR,RECEPCAO,CIRURGICO')}">
+                         rendered="#{sessionCtrl.isUserInRoles('RECEPCAO')}">
           <p:resetInput target="modalWrapper"/>
         </p:commandButton>
+
         <h:panelGroup id="listWrapper" style="margin-top: 5px;" layout="block">
           <p:dataTable value="#{guiaCtrl.lazyModel}" var="guia" sortBy="#{guia.id}" sortOrder="descending"
                        paginator="true" emptyMessage="Sem registros"
@@ -150,30 +163,50 @@
                        paginatorPosition="bottom" rows="25" rowKey="index" rowIndexVar="indexVar"
                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                        lazy="true" rowsPerPageTemplate="25,50,100">
-            <p:column headerText="Id" width="50" styleClass="left-align" sortBy="#{guia.id}">
+            <p:column headerText="Id" styleClass="left-align" width="35" sortBy="#{guia.id}">
               <h:outputText value="#{guia.id}"/>
             </p:column>
-            <p:column headerText="Convênio" width="150" styleClass="left-align" sortBy="#{guia.convenio}">
+            <p:column headerText="Convênio" width="150" styleClass="left-align ellipsis-text" sortBy="#{guia.convenio}">
               <h:outputText value="#{guia.convenio.nome}"/>
             </p:column>
-            <p:column headerText="Paciente" styleClass="left-align" sortBy="#{guia.paciente}">
+            <p:column headerText="Paciente" styleClass="left-align ellipsis-text" width="175" sortBy="#{guia.paciente}">
               <h:panelGroup id="editShortCut">
-                <p:commandLink action="#{guiaCtrl.preOpenModal(guia)}" value="#{guia.paciente}"
+                <p:commandLink action="#{guiaCtrl.preOpenModal(guia, 'BOTH')}" value="#{guia.paciente}"
                                ajax="true" process="@this" update="#{p:component('modalWrapper')}"
-                               rendered="#{guiaCtrl.renderEditar(guia)}"
+                               rendered="#{sessionCtrl.user.role eq 'ADMINISTRADOR'}"
+                               oncomplete="PF('modal').show();"/>
+                <p:commandLink action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}" value="#{guia.paciente}"
+                               ajax="true" process="@this" update="#{p:component('modalWrapper')}"
+                               rendered="#{sessionCtrl.user.role eq 'RECEPCAO'}"
+                               oncomplete="PF('modal').show();"/>
+                <p:commandLink action="#{guiaCtrl.preOpenModal(guia, 'OPME')}" value="#{guia.paciente}"
+                               ajax="true" process="@this" update="#{p:component('modalWrapper')}"
+                               rendered="#{sessionCtrl.user.role eq 'CIRURGICO'}"
                                oncomplete="PF('modal').show();"/>
                 <p:commandLink action="#{guiaCtrl.preOpenModalToVisualize(guia)}" value="#{guia.paciente}"
                                ajax="true" process="@this" update="#{p:component('modalWrapper')}"
-                               rendered="#{not guiaCtrl.renderEditar(guia)}"
+                               rendered="#{not sessionCtrl.isUserInRoles('RECEPCAO,CIRURGICO')}"
                                oncomplete="PF('modal').show();"/>  
               </h:panelGroup>
             </p:column>
-            <p:column headerText="Prestador" styleClass="left-align" sortBy="#{guia.prestador.nome}">
+            <p:column headerText="Prestador" styleClass="left-align ellipsis-text" width="175" sortBy="#{guia.prestador.nome}">
               <h:outputText value="#{guia.prestador.nome}"/>
             </p:column>
-            <p:column headerText="Estado" width="100" styleClass="center-align">
-              <h:panelGroup id="estado" styleClass="estadoGuia estadoGuia--#{guia.estado}" layout="block">
-                <h:outputText value="#{guia.estado.label}"/>
+            <p:column headerText="Status" width="85" styleClass="center-align">
+              <h:panelGroup id="status" styleClass="estadoGuia estadoGuia--#{guia.status}" layout="block">
+                <h:outputText value="#{guia.status.label}"/>
+              </h:panelGroup>
+            </p:column>
+            <p:column headerText="OPME" width="85" styleClass="center-align">
+              <h:panelGroup id="statusOpme" styleClass="estadoGuia estadoGuia--#{guia.statusOpme}"
+                            layout="block" rendered="#{not empty guia.statusOpme}">
+                <h:outputText value="#{guia.statusOpme.label}"/>
+              </h:panelGroup>
+            </p:column>
+            <p:column headerText="Mat. Estq." width="85" styleClass="center-align">
+              <h:panelGroup id="statusMat" styleClass="estadoGuia estadoGuia--#{guia.statusMat}"
+                            layout="block" rendered="#{not empty guia.statusMat}">
+                <h:outputText value="#{guia.statusMat.label}"/>
               </h:panelGroup>
             </p:column>
             <p:column headerText="Emissão" width="100" styleClass="left-align" sortBy="#{guia.dataEmissao}">
@@ -185,63 +218,126 @@
               <h:outputText value="#{guia.tipo.label}"/>
             </p:column>
             <p:column styleClass="center-align" width="85">
-              <p:menuButton id="menuButton" value="Ações">
-                <p:menuitem value="Liberar" actionListener="#{guiaCtrl.liberar(guia)}"
-                            ajax="true" process="@this" update="estado menuButton editShortCut"
-                            icon="fa fa-send"
-                            rendered="#{guiaCtrl.renderLiberar(guia)}"/>
+              <p:menuButton id="menuButton" value="Ações" >
+
+
+
+                <p:menuitem value="Solicitar (Conv.)" actionListener="#{guiaCtrl.solicitar(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            icon="fa fa-phone"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status eq 'CRIADA'}"/>
                 <p:menuitem value="Autorizada" actionListener="#{guiaCtrl.autorizar(guia)}"
-                            ajax="true" process="@this" update="estado menuButton editShortCut"
-                            rendered="#{guiaCtrl.renderResposta(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status.contains('ANALISE,RE_ANALISE')}"
                             icon="fa fa-thumbs-up"/>
                 <p:menuitem value="Aut. Parcial"
-                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            actionListener="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             ajax="true" process="@this" update="#{p:component('parcialDlgWrapper')}"
                             oncomplete="PF('parcialDlg').show()"
-                            rendered="#{guiaCtrl.renderResposta(guia)}"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status.contains('ANALISE,RE_ANALISE')}"
                             icon="fa fa-check-circle"/>
-                <p:menuitem value="Recusada" actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                <p:menuitem value="Negada" actionListener="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
                             oncomplete="PF('negarDlg').show()"
-                            rendered="#{guiaCtrl.renderResposta(guia)}"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status.contains('ANALISE,RE_ANALISE')}"
                             icon="fa fa-ban"/>
-                <p:menuitem value="Em análise" actionListener="#{guiaCtrl.emAnalise(guia)}"
-                            ajax="true" process="@this" update="estado menuButton editShortCut"
-                            rendered="#{guiaCtrl.renderAnalise(guia)}"
+                <p:menuitem value="Re-análise" actionListener="#{guiaCtrl.reAnalise(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status.contains('PENDENTE')}"
                             icon="fa fa-wrench"/>
                 <p:menuitem value="Pendente"
-                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            actionListener="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             ajax="true" process="@this" update="#{p:component('pendenteDlgWrapper')}"
                             oncomplete="PF('pendenteDlg').show()"
                             icon="fa fa-question-circle"
-                            rendered="#{guiaCtrl.renderPendente(guia)}"/>
-                <p:separator rendered="#{guiaCtrl.renderLiberar(guia) or guiaCtrl.renderResposta(guia) or guiaCtrl.renderPendente(guia) or guiaCtrl.renderAnalise(guia)}"/>
-                <p:menuitem value="Comentar" action="#{guiaCtrl.preOpenModal(guia)}"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.status.contains('ANALISE,RE_ANALISE,AUTORIZADA,PARCIAL,NEGADA')}"/>
+                <p:menuitem value="Liberar (OPME)" actionListener="#{guiaCtrl.liberar(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            icon="fa fa-send"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.statusOpme eq 'A_LIBERAR'}"/>
+
+
+
+                <p:menuitem value="Solicitar (OPME)" actionListener="#{guiaCtrl.solicitarOpme(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            icon="fa fa-phone"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme eq 'LIBERADA'}"/>
+                <p:menuitem value="Autorizar (OPME)" actionListener="#{guiaCtrl.autorizarOpme(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme.contains('ANALISE,RE_ANALISE')}"
+                            icon="fa fa-thumbs-up"/>
+                <p:menuitem value="Aut. Parcial (OPME)"
+                            actionListener="#{guiaCtrl.preOpenModal(guia, 'OPME')}"
+                            ajax="true" process="@this" update="#{p:component('parcialDlgWrapper')}"
+                            oncomplete="PF('parcialDlg').show()"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme.contains('ANALISE,RE_ANALISE')}"
+                            icon="fa fa-check-circle"/>
+                <p:menuitem value="Negada (OPME)" actionListener="#{guiaCtrl.preOpenModal(guia, 'OPME')}"
+                            ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
+                            oncomplete="PF('negarDlg').show()"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme.contains('ANALISE,RE_ANALISE')}"
+                            icon="fa fa-ban"/>
+                <p:menuitem value="Re-análise (OPME)" actionListener="#{guiaCtrl.reAnaliseOpme(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme eq 'PENDENTE'}"
+                            icon="fa fa-wrench"/>
+                <p:menuitem value="Pendente (OPME)"
+                            actionListener="#{guiaCtrl.preOpenModal(guia, 'OPME')}"
+                            ajax="true" process="@this" update="#{p:component('pendenteDlgWrapper')}"
+                            oncomplete="PF('pendenteDlg').show()"
+                            icon="fa fa-question-circle"
+                            rendered="#{sessionCtrl.isUserInRoles('CIRURGICO') and guia.statusOpme.contains('ANALISE,RE_ANALISE,AUTORIZADA,PARCIAL,NEGADA')}"/>
+
+
+                <p:menuitem value="Solicitar (Mat./Estq.)" actionListener="#{guiaCtrl.solicitarMaterial(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.statusMat eq 'A_SOLICITAR'}"
+                            icon="fa fa-thumbs-up"/>
+                <p:menuitem value="Autorizar (Mat./Estq.)" actionListener="#{guiaCtrl.autorizarMat(guia)}"
+                            ajax="true" process="@this" update="#{p:component('listWrapper')} menuButton editShortCut"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.statusMat eq 'ANALISE'}"
+                            icon="fa fa-thumbs-up"/>
+                <p:menuitem value="Negada (Mat./Estq.)" actionListener="#{guiaCtrl.preOpenModal(guia, 'MAT')}"
+                            ajax="true" process="@this" update="#{p:component('negarDlgWrapper')}"
+                            oncomplete="PF('negarDlg').show()"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guia.statusMat eq 'ANALISE'}"
+                            icon="fa fa-ban"/>
+
+                <p:separator rendered="#{sessionCtrl.user.role ne 'USUARIO'}" />
+                <p:menuitem value="Comentar" action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             process="@this" update="#{p:component('comentarDlgWrapper')}"
                             oncomplete="PF('comentarDlg').show()"
                             icon="fa fa-comment"/>
-                <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia)}"
+                <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             process="@this" update="#{p:component('comentariosDlgWrapper')}"
                             oncomplete="PF('comentariosDlg').show()"
                             icon="fa fa-comments"/>
-                <p:menuitem value="Histórico" action="#{guiaCtrl.preOpenModal(guia)}"
+                <p:menuitem value="Histórico" action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             process="@this" update="#{p:component('historicoDlgWrapper')}"
                             oncomplete="PF('historicoDlg').show()"
                             icon="fa fa-tags"/>
                 <p:separator/>
-                <p:menuitem action="#{guiaCtrl.preOpenModal(guia)}" value="Editar"
+                <p:menuitem action="#{guiaCtrl.preOpenModal(guia, 'BOTH')}" value="Editar"
                             ajax="true" process="@this" update="#{p:component('modalWrapper')}"
-                            rendered="#{guiaCtrl.renderEditar(guia)}"
+                            rendered="#{sessionCtrl.user.role eq 'ADMINISTRADOR' and guiaCtrl.status ne 'CANCELADA'}"
+                            icon="fa fa-pencil" oncomplete="PF('modal').show();"/>
+                <p:menuitem action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}" value="Editar"
+                            ajax="true" process="@this" update="#{p:component('modalWrapper')}"
+                            rendered="#{sessionCtrl.user.role eq 'RECEPCAO' and guiaCtrl.status ne 'CANCELADA'}"
+                            icon="fa fa-pencil" oncomplete="PF('modal').show();"/>
+                <p:menuitem action="#{guiaCtrl.preOpenModal(guia, 'OPME')}" value="Editar (OPME)"
+                            ajax="true" process="@this" update="#{p:component('modalWrapper')}"
+                            rendered="#{sessionCtrl.user.role eq 'CIRURGICO' and guiaCtrl.status ne 'CANCELADA'}"
                             icon="fa fa-pencil" oncomplete="PF('modal').show();"/>
                 <p:menuitem action="#{guiaCtrl.preOpenModalToVisualize(guia)}" value="Visualizar"
                             ajax="true" process="@this" update="#{p:component('modalWrapper')}"
                             icon="fa fa-search" oncomplete="PF('modal').show();"/>
                 <p:menuitem value="Cancelar"
-                            actionListener="#{guiaCtrl.preOpenModal(guia)}"
+                            actionListener="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             ajax="true" process="@this" update="#{p:component('cancelarDlgWrapper')}"
                             oncomplete="PF('cancelarDlg').show()"
                             icon="fa fa-trash"
-                            rendered="#{guiaCtrl.renderCancelar(guia)}"/>
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO') and guiaCtrl.status ne 'CANCELADA'}"/>
               </p:menuButton>
             </p:column>
           </p:dataTable>
@@ -254,13 +350,13 @@
       <h:panelGroup id="negarDlgWrapper">
         <p:dialog id="negarDlg" widgetVar="negarDlg" modal="true">
           <f:facet name="header">
-            <h:outputText value="MOTIVO DA RECUSA - "/>
+            <h:outputText value="MOTIVO DA NEGATIVA - "/>
             <h:outputText styleClass="qtdNegar" value="500"/>
           </f:facet>
           <h:panelGrid id="negarDlgGrid">
             <p:inputTextarea id="motivoNegar" value="#{guiaCtrl.motivo}"
                              onkeyup="countDownCharacters(this.value, 500, '.qtdNegar');"
-                             placeholder="Indique os motivos do recusa (500 caracteres)."
+                             placeholder="Indique os motivos do negativa (500 caracteres)."
                              maxlength="500" cols="50" rows="10"/>
           </h:panelGrid>
           <f:facet name="footer">
@@ -348,12 +444,11 @@
 
       <h:panelGroup id="historicoDlgWrapper">
         <p:dialog id="historicoDlg" widgetVar="historicoDlg"
-                  width="600" modal="true" header="HISTÓRICO">
+                  width="800" modal="true" header="HISTÓRICO">
           <p:dataTable value="#{guiaCtrl.item.eventos}" var="evento"
-                       sortBy="#{evento.id}" sortOrder="descending"
                        lazy="true" rendered="#{not empty guiaCtrl.item.eventos}">
-            <p:column headerText="Evento" styleClass="left-align" width="100">
-              <h:outputText value="#{evento.tipo.label }"/>
+            <p:column headerText="Evento" styleClass="left-align">
+              <h:outputText value="#{evento.texto}" escape="false"/>
             </p:column>
             <p:column headerText="Usuário" width="125" styleClass="left-align">
               <h:outputText value="#{evento.usuario.login}"/>

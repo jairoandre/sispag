@@ -71,14 +71,14 @@ public class ProFatCtrl extends AbstractCtrl<ProFat> {
     setItem(createNewItem());
     setSearchTerm(query);
     prepareSearch();
-    return getLazyModel().load(5);
+    return getLazyModel().load(6);
   }
 
-  public List<ProFat> completeMethodOPME(String query) {
+  public List<ProFat> completeMethodMat(String query) {
     setItem(createNewItem());
     setSearchTerm(query);
     prepareSearch();
-    setSearchParam("tipo", "OP");
-    return getLazyModel().load(5);
+    setSearchParam("tipo", "MAT");
+    return getLazyModel().load(6);
   }
 }

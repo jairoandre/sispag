@@ -4,10 +4,7 @@ import br.com.vah.sispag.constants.*;
 import br.com.vah.sispag.entities.dbamv.Convenio;
 import br.com.vah.sispag.entities.dbamv.Prestador;
 import br.com.vah.sispag.entities.dbamv.ProFat;
-import br.com.vah.sispag.entities.usrdbvah.Anexo;
-import br.com.vah.sispag.entities.usrdbvah.Evento;
-import br.com.vah.sispag.entities.usrdbvah.Guia;
-import br.com.vah.sispag.entities.usrdbvah.ItemGuia;
+import br.com.vah.sispag.entities.usrdbvah.*;
 import br.com.vah.sispag.service.AbstractSrv;
 import br.com.vah.sispag.service.GuiaSrv;
 import org.primefaces.event.FileUploadEvent;
@@ -48,7 +45,7 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   private final List<SelectItem> tipos = TipoGuiaEnum.getSelectItems();
 
-  private final List<SelectItem> estadosForCombo = EstadoGuiaEnum.getSelectItems();
+  private final List<SelectItem> statusForCombo = StatusEnum.getSelectItems();
 
   private final List<SelectItem> operacoesForCombo = OperacaoDataEnum.getSelectItens();
 
@@ -57,6 +54,8 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
   private String motivo;
 
   private String nomePaciente;
+
+  private String opmeInput;
 
   private Prestador prestador;
 
@@ -74,13 +73,23 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   private OperacaoDataEnum entregaOp = OperacaoDataEnum.EQ;
 
-  private EstadoGuiaEnum estado;
+  private StatusEnum status;
+
+  private StatusEnum statusOpme;
+
+  private StatusEnum statusMat;
 
   private TipoGuiaEnum tipo;
 
   private List<String> filtros;
 
   private Map<String, GuiaFieldsEnum> mapFiltros;
+
+  private Boolean sohOpme;
+
+  private Boolean sohMaterial;
+
+  private OperationEnum operation = OperationEnum.GUIA;
 
   @PostConstruct
   public void init() {
@@ -91,20 +100,22 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
   }
 
   public void preOpenModalToVisualize(Guia guia) {
-    preOpenModal(guia);
+    preOpenModal(guia, null);
     setEditing(false);
   }
 
   public void preOpenModal() {
+    this.operation = OperationEnum.GUIA;
     setEditing(true);
     setItem(createNewItem());
     motivo = "";
   }
 
-  public void preOpenModal(Guia guia) {
+  public void preOpenModal(Guia guia, OperationEnum operation) {
+    this.operation = operation;
     setEditing(true);
     motivo = "";
-    setItem(guia);
+    setItem(service.initializeLists(guia));
   }
 
   @Override
@@ -155,12 +166,31 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     proFatToAdd = null;
   }
 
+  public void onItemSelectForMaterial(SelectEvent evt) {
+    ProFat proFat = (ProFat) evt.getObject();
+    if (proFat != null) {
+      ItemMat itemMat = new ItemMat();
+      itemMat.setGuia(getItem());
+      itemMat.setNome(proFat.getNome());
+      getItem().getMateriais().add(itemMat);
+    }
+    proFatToAdd = null;
+  }
+
   public void onChangeTipo(SelectEvent evt) {
     getItem().getItens().clear();
   }
 
   public void removeItemGuia(ItemGuia itemGuia) {
     getItem().getItens().remove(itemGuia);
+  }
+
+  public void removeItemOpme(ItemOpme itemOpme) {
+    getItem().getOpmes().remove(itemOpme);
+  }
+
+  public void removeItemMateriais(ItemMat itemMat) {
+    getItem().getMateriais().remove(itemMat);
   }
 
   private String filterDateLabel(OperacaoDataEnum op, String label, Date[] range) {
@@ -222,21 +252,32 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
       mapFiltros.put(respostaKey, GuiaFieldsEnum.RESPOSTA);
       setSearchParam("resposta", resposta);
     }
-    if (estado != null) {
-      String estadoKey = "<b>Estado: </b>" + estado.getLabel();
-      filtros.add(estadoKey);
-      mapFiltros.put(estadoKey, GuiaFieldsEnum.ESTADO);
-      setSearchParam("estado", estado);
+    if (status != null) {
+      String statusKey = "<b>Status: </b>" + status.getLabel();
+      filtros.add(statusKey);
+      mapFiltros.put(statusKey, GuiaFieldsEnum.STATUS);
+      setSearchParam("status", status);
+    }
+    if (statusOpme != null) {
+      String statusOpmeKey = "<b>Status OPME: </b>" + statusOpme.getLabel();
+      filtros.add(statusOpmeKey);
+      mapFiltros.put(statusOpmeKey, GuiaFieldsEnum.STATUS);
+      setSearchParam("statusOpme", statusOpme);
+    }
+    if (statusMat != null) {
+      String statusMatKey = "<b>Status Mat./Estq.: </b>" + statusMat.getLabel();
+      filtros.add(statusMatKey);
+      mapFiltros.put(statusMatKey, GuiaFieldsEnum.STATUS);
+      setSearchParam("statusMat", statusMat);
     }
     if (tipo != null) {
       String tipoKey = "<b>Tipo: </b>" + tipo.getLabel();
       filtros.add(tipoKey);
       mapFiltros.put(tipoKey, GuiaFieldsEnum.TIPO);
       setSearchParam("tipo", tipo);
-    } else {
-      if (sessionCtrl.getUser().getRole().equals(RoleEnum.CIRURGICO)) {
-        setSearchParam("tipo", TipoGuiaEnum.OPME);
-      }
+    }
+    if (sessionCtrl.getUser().getRole().equals(RoleEnum.CIRURGICO)) {
+      setSearchParam("opme", true);
     }
   }
 
@@ -255,8 +296,8 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
       case ENTREGA:
         entrega = new Date[2];
         break;
-      case ESTADO:
-        estado = null;
+      case STATUS:
+        status = null;
         break;
       case PRESTADOR:
         prestador = null;
@@ -278,7 +319,11 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     if (getItem().getId() == null) {
       setItem(service.criar(getItem(), sessionCtrl.getUser()));
     } else {
-      setItem(service.atualizar(getItem(), sessionCtrl.getUser()));
+      try {
+        setItem(service.atualizar(getItem(), sessionCtrl.getUser()));
+      } catch (Exception e) {
+        addErrorMsg(e);
+      }
     }
     return super.doSave();
   }
@@ -293,11 +338,71 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     }
   }
 
-  public void emAnalise(Guia guia) {
+  public void autorizarOpme(Guia guia) {
     try {
-      guia = service.emAnalise(guia, sessionCtrl.getUser());
+      guia = service.autorizarOpme(guia, sessionCtrl.getUser());
       service.update(guia);
-      addInfoMsg("Estado de guia modificado com sucesso (Em análise).");
+      addInfoMsg("OPME autorizado com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void autorizarMat(Guia guia) {
+    try {
+      guia = service.autorizarMat(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("Material de estoque autorizado com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void reAnalise(Guia guia) {
+    try {
+      guia = service.reAnalise(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("Guia em re-análise.");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void reAnaliseOpme(Guia guia) {
+    try {
+      guia = service.reAnaliseOPME(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("OPME em re-análise.");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void solicitar(Guia guia) {
+    try {
+      guia = service.solicitar(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("Guia solicitada com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void solicitarOpme(Guia guia) {
+    try {
+      guia = service.solicitarOpme(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("OPME solicitado com sucesso");
+    } catch (Exception e) {
+      addErrorMsg(e);
+    }
+  }
+
+  public void solicitarMaterial(Guia guia) {
+    try {
+      guia = service.solicitarMaterial(guia, sessionCtrl.getUser());
+      service.update(guia);
+      addInfoMsg("Mat. estoque solicitado com sucesso");
     } catch (Exception e) {
       addErrorMsg(e);
     }
@@ -315,9 +420,24 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   public void negar() {
     try {
-      Guia guia = service.negar(getItem(), sessionCtrl.getUser(), motivo);
+      Guia guia;
+      String msg;
+      switch (this.operation) {
+        case OPME:
+          guia = service.negarOpme(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "OPME negado com sucesso";
+          break;
+        case MAT:
+          guia = service.negarMaterial(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "Material de Estoque negado com sucesso";
+          break;
+        default:
+          guia = service.negar(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "Guia negada com sucesso";
+          break;
+      }
       service.update(guia);
-      addInfoMsg("Guia negada com sucesso");
+      addInfoMsg(msg);
     } catch (Exception e) {
       addErrorMsg(e);
     }
@@ -325,9 +445,20 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   public void parcial() {
     try {
-      Guia guia = service.parcial(getItem(), sessionCtrl.getUser(), motivo);
+      Guia guia;
+      String msg;
+      switch (this.operation) {
+        case OPME:
+          guia = service.parcialOpme(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "OPME parcialmente autorizado";
+          break;
+        default:
+          guia = service.parcial(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "Guia parcialmente autorizada";
+          break;
+      }
       service.update(guia);
-      addInfoMsg("Autorização parcial com sucesso");
+      addInfoMsg(msg);
     } catch (Exception e) {
       addErrorMsg(e);
     }
@@ -345,9 +476,20 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   public void pendente() {
     try {
-      Guia guia = service.pendente(getItem(), sessionCtrl.getUser(), motivo);
+      Guia guia;
+      String msg;
+      switch (this.operation) {
+        case OPME:
+          guia = service.pendenteOpme(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "OPME marcado como pendente.";
+          break;
+        default:
+          guia = service.pendente(getItem(), sessionCtrl.getUser(), motivo);
+          msg = "Guia marcada como pendente.";
+          break;
+      }
       service.update(guia);
-      addInfoMsg("Guia marcada como pendente com sucesso");
+      addInfoMsg(msg);
     } catch (Exception e) {
       addErrorMsg(e);
     }
@@ -372,6 +514,17 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     getItem().getAnexos().add(anexo);
   }
 
+  public void onChangeOpmeInput() {
+    if (opmeInput != null && !opmeInput.isEmpty()) {
+      ItemOpme opme = new ItemOpme();
+      opme.setNome(opmeInput);
+      opme.setGuia(getItem());
+      getItem().getOpmes().add(opme);
+      opmeInput = null;
+    }
+
+  }
+
   public void removerAnexo(Anexo anexo) {
     getItem().getAnexos().remove(anexo);
   }
@@ -386,30 +539,6 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   public List<Evento> comentariosGuia() {
     return service.comentariosGuia(getItem());
-  }
-
-  public Boolean renderLiberar(Guia guia) {
-    return service.renderLiberar(guia, sessionCtrl.getUser());
-  }
-
-  public Boolean renderResposta(Guia guia) {
-    return service.renderResposta(guia, sessionCtrl.getUser());
-  }
-
-  public Boolean renderPendente(Guia guia) {
-    return service.renderPendente(guia, sessionCtrl.getUser());
-  }
-
-  public Boolean renderCancelar(Guia guia) {
-    return service.renderCancelar(guia, sessionCtrl.getUser());
-  }
-
-  public Boolean renderAnalise(Guia guia) {
-    return service.renderAnalise(guia, sessionCtrl.getUser());
-  }
-
-  public Boolean renderEditar(Guia guia) {
-    return service.renderEditar(guia, sessionCtrl.getUser());
   }
 
   public String getMotivo() {
@@ -442,6 +571,14 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   public void setEmissao(Date[] emissao) {
     this.emissao = emissao;
+  }
+
+  public String getOpmeInput() {
+    return opmeInput;
+  }
+
+  public void setOpmeInput(String opmeInput) {
+    this.opmeInput = opmeInput;
   }
 
   public OperacaoDataEnum getEmissaoOp() {
@@ -492,12 +629,28 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     this.entregaOp = entregaOp;
   }
 
-  public EstadoGuiaEnum getEstado() {
-    return estado;
+  public StatusEnum getStatus() {
+    return status;
   }
 
-  public void setEstado(EstadoGuiaEnum estado) {
-    this.estado = estado;
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
+
+  public StatusEnum getStatusOpme() {
+    return statusOpme;
+  }
+
+  public void setStatusOpme(StatusEnum statusOpme) {
+    this.statusOpme = statusOpme;
+  }
+
+  public StatusEnum getStatusMat() {
+    return statusMat;
+  }
+
+  public void setStatusMat(StatusEnum statusMat) {
+    this.statusMat = statusMat;
   }
 
   public TipoGuiaEnum getTipo() {
@@ -516,11 +669,31 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
     return mapFiltros;
   }
 
-  public List<SelectItem> getEstadosForCombo() {
-    return estadosForCombo;
+  public List<SelectItem> getStatusForCombo() {
+    return statusForCombo;
   }
 
   public List<SelectItem> getOperacoesForCombo() {
     return operacoesForCombo;
+  }
+
+  public Boolean getSohMaterial() {
+    return sohMaterial;
+  }
+
+  public void setSohMaterial(Boolean sohMaterial) {
+    this.sohMaterial = sohMaterial;
+  }
+
+  public Boolean getSohOpme() {
+    return sohOpme;
+  }
+
+  public void setSohOpme(Boolean sohOpme) {
+    this.sohOpme = sohOpme;
+  }
+
+  public OperationEnum getOperation() {
+    return operation;
   }
 }

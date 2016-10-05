@@ -36,7 +36,7 @@ public class User extends BaseEntity {
   private String email;
 
   @Column(name = "CD_ROLE", nullable = false)
-  @Enumerated(EnumType.STRING)
+  @Enumerated(EnumType.ORDINAL)
   private RoleEnum role;
 
   public User() {

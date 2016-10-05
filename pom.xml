@@ -54,49 +54,58 @@
       <version>${hibernate-entity-manager}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-web-api</artifactId>
       <version>${javaee-web-api-version}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.primefaces</groupId>
       <artifactId>primefaces</artifactId>
       <version>${primefaces-version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.primefaces.themes</groupId>
       <artifactId>${primefaces-themes-artifact}</artifactId>
       <version>${primefaces-themes-version}</version>
     </dependency>
+
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>${commons-fileupload-version}</version>
     </dependency>
+
     <dependency>
       <groupId>javax.faces</groupId>
       <artifactId>javax.faces-api</artifactId>
       <version>${javax-faces-api-version}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>3.7</version>
     </dependency>
+
     <dependency>
       <groupId>net.sf.jasperreports</groupId>
       <artifactId>jasperreports</artifactId>
       <version>5.5.2</version>
     </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
@@ -138,13 +147,7 @@
       <artifactId>jaxp-api</artifactId>
       <version>1.4.2</version>
     </dependency>
-<!--
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4</version>
-    </dependency>
--->
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>

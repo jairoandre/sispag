@@ -19,12 +19,14 @@
                 <p:outputLabel value="Tipo:" for="tipo"/>
               </p:column>
               <p:column>
-                <p:selectOneMenu id="tipo" required="true" value="#{guiaCtrl.item.tipo}" rendered="#{guiaCtrl.editing}">
+                <p:selectOneMenu id="tipo" required="true" value="#{guiaCtrl.item.tipo}"
+                                 rendered="#{empty guiaCtrl.item.id and guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}">
                   <p:ajax event="itemSelect" listener="#{guiaCtrl.onChangeTipo}" process="@this"
                           update="#{p:component('procedimentosTab')} comboItem"/>
                   <f:selectItems value="#{guiaCtrl.tipos}"/>
                 </p:selectOneMenu>
-                <h:outputText value="#{guiaCtrl.item.tipo.label}" rendered="#{not guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.tipo.label}"
+                              rendered="#{not empty guiaCtrl.item.id or not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
               <p:column style="font-weight: bold;">
                 <p:outputLabel value="Convênio:" for="convenioAutoComplete"/>
@@ -40,20 +42,20 @@
                                 inputStyleClass="vah-input"
                                 completeMethod="#{convenioCtrl.completeMethod}"
                                 placeholder="Nome..."
-                                rendered="#{guiaCtrl.editing}"
+                                rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"
                                 required="true">
                   <p:ajax event="change" process="@this" update="#{p:component('registroAns')}"/>
                   <p:ajax event="itemSelect" process="@this" update="#{p:component('registroAns')}"/>
                 </p:autoComplete>
-                <h:outputText value="#{guiaCtrl.item.convenio.nome}" rendered="#{not guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.convenio.nome}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
               <p:column style="font-weight: bold;">
                 <p:outputLabel value="Núm.:" for="numeroGuia"/>
               </p:column>
               <p:column>
                 <p:inputText id="numeroGuia" value="#{guiaCtrl.item.numeroGuia}" required="true"
-                             rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.numeroGuia}" rendered="#{not guiaCtrl.editing}"/>
+                             rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroGuia}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
             </p:row>
             <p:row>
@@ -64,11 +66,11 @@
                 <h:panelGroup id="registroAns">
                   <h:panelGroup rendered="#{guiaCtrl.editing}">
                     <p:inputText value="#{guiaCtrl.item.convenio.codigoAns}"
-                                 rendered="#{not empty guiaCtrl.item.convenio}"
+                                 rendered="#{not empty guiaCtrl.item.convenio and guiaCtrl.operation.contains('GUIA,BOTH')}"
                                  readonly="true"/>
                     <p:inputText value="-" rendered="#{empty guiaCtrl.item.convenio}" readonly="true"/>
                   </h:panelGroup>
-                  <h:outputText value="#{guiaCtrl.item.convenio.codigoAns}" rendered="#{not guiaCtrl.editing}"/>
+                  <h:outputText value="#{guiaCtrl.item.convenio.codigoAns}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
                 </h:panelGroup>
               </p:column>
               <p:column style="font-weight: bold;">
@@ -76,35 +78,37 @@
               </p:column>
               <p:column>
                 <p:inputText id="numeroSolicitacao" value="#{guiaCtrl.item.numeroSolicitacao}" required="true"
-                             rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.numeroSolicitacao}" rendered="#{not guiaCtrl.editing}"/>
+                             rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroSolicitacao}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
               <p:column style="font-weight: bold;">
                 <p:outputLabel value="Senha:" for="senha"/>
               </p:column>
               <p:column>
-                <p:inputText id="senha" value="#{guiaCtrl.item.senha}" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.senha}" rendered="#{not guiaCtrl.editing}"/>
+                <p:inputText id="senha" value="#{guiaCtrl.item.senha}" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.senha}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
             </p:row>
             <p:row>
-              <p:column style="font-weight: bold;">
-                <p:outputLabel value="Emissão:" for="dataEmissao"/>
-              </p:column>
-              <p:column>
-                <p:calendar id="dataEmissao" value="#{guiaCtrl.item.dataEmissao}" pattern="dd/MM/yyyy" required="true"
-                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.dataEmissao}" rendered="#{not guiaCtrl.editing}">
-                  <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
-                </h:outputText>
-              </p:column>
               <p:column style="font-weight: bold;">
                 <p:outputLabel value="Entrega:" for="dataEntrega"/>
               </p:column>
               <p:column>
                 <p:calendar id="dataEntrega" value="#{guiaCtrl.item.dataEntrega}" pattern="dd/MM/yyyy" required="true"
-                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.dataEntrega}" rendered="#{not guiaCtrl.editing}">
+                            timeZone="GMT-03:00" mask="true" locale="pt_BR"
+                            rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.dataEntrega}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}">
+                  <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
+                </h:outputText>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="Solicitação:" for="dataEmissao"/>
+              </p:column>
+              <p:column>
+                <p:calendar id="dataEmissao" value="#{guiaCtrl.item.dataEmissao}" pattern="dd/MM/yyyy" required="true"
+                            timeZone="GMT-03:00" mask="true" locale="pt_BR"
+                            rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.dataEmissao}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}">
                   <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
                 </h:outputText>
               </p:column>
@@ -113,8 +117,9 @@
               </p:column>
               <p:column>
                 <p:calendar id="dataResposta" value="#{guiaCtrl.item.dataResposta}" pattern="dd/MM/yyyy"
-                            mask="true" locale="pt_BR" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.dataResposta}" rendered="#{not guiaCtrl.editing}">
+                            timeZone="GMT-03:00" mask="true" locale="pt_BR"
+                            rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.dataResposta}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}">
                   <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR" timeZone="GMT-03:00"/>
                 </h:outputText>
               </p:column>
@@ -129,15 +134,22 @@
                 <p:outputLabel value="Nº. Cartão:"/>
               </p:column>
               <p:column>
-                <p:inputText value="#{guiaCtrl.item.cartao}" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.cartao}" rendered="#{not guiaCtrl.editing}"/>
+                <p:inputText value="#{guiaCtrl.item.cartao}" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.cartao}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+              </p:column>
+              <p:column style="font-weight: bold;">
+                <p:outputLabel value="CPF:"/>
+              </p:column>
+              <p:column>
+                <p:inputText value="#{guiaCtrl.item.cpf}" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.cpf}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
               <p:column style="font-weight: bold;">
                 <p:outputLabel value="Telefone:"/>
               </p:column>
-              <p:column colspan="3">
-                <p:inputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{not guiaCtrl.editing}"/>
+              <p:column>
+                <p:inputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.numeroTelefone}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
             </p:row>
             <p:row>
@@ -146,8 +158,8 @@
               </p:column>
               <p:column colspan="5">
                 <p:inputText id="nomePaciente" value="#{guiaCtrl.item.paciente}" style="width: 500px;" required="true"
-                             rendered="#{guiaCtrl.editing}"/>
-                <h:outputText value="#{guiaCtrl.item.paciente}" rendered="#{not guiaCtrl.editing}"/>
+                             rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"/>
+                <h:outputText value="#{guiaCtrl.item.paciente}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
             </p:row>
             <p:row>
@@ -172,11 +184,11 @@
                                 completeMethod="#{prestadorCtrl.completeMethod}"
                                 placeholder="Nome..."
                                 required="true"
-                                rendered="#{guiaCtrl.editing}">
+                                rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}">
                   <p:ajax event="itemSelect" process="@this"
                           update="#{p:component('cpfPrestador')} #{p:component('especialidadesPnl')}"/>
                 </p:autoComplete>
-                <h:outputText value="#{guiaCtrl.item.prestador.nome}" rendered="#{not guiaCtrl.editing}"/>
+                <h:outputText value="#{guiaCtrl.item.prestador.nome}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </p:column>
             </p:row>
             <p:row>
@@ -185,13 +197,13 @@
               </p:column>
               <p:column>
                 <h:panelGroup id="cpfPrestador">
-                  <h:panelGroup rendered="#{guiaCtrl.editing}">
+                  <h:panelGroup rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}">
                     <p:inputText value="#{guiaCtrl.item.prestador.cpf}" rendered="#{not empty guiaCtrl.item.prestador}"
                                  readonly="true" converter="#{cpfStringCvt}"/>
                     <p:inputText value="" rendered="#{empty guiaCtrl.item.prestador}" readonly="true"/>
                   </h:panelGroup>
                   <h:outputText value="#{guiaCtrl.item.prestador.cpf}" converter="#{cpfStringCvt}"
-                                rendered="#{not guiaCtrl.editing}"/>
+                                rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
                 </h:panelGroup>
               </p:column>
               <p:column style="font-weight: bold;">
@@ -209,10 +221,10 @@
             </p:row>
           </p:panelGrid>
         </p:tab>
-        <p:tab title="Itens">
+        <p:tab title="Procedimentos">
           <h:panelGroup id="procedimentosTab" style="height: 100%;">
             <h:panelGroup id="comboItem">
-              <h:panelGroup rendered="#{guiaCtrl.editing}">
+              <h:panelGroup rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}">
                 <p:autoComplete id="proFatAutoCompleteSADT" value="#{guiaCtrl.proFatToAdd}"
                                 queryDelay="200"
                                 var="item"
@@ -223,47 +235,126 @@
                                 inputStyleClass="vah-input"
                                 inputStyle="width: 500px;"
                                 completeMethod="#{proFatCtrl.completeMethod}"
-                                rendered="#{guiaCtrl.item.tipo ne 'OPME'}"
                                 placeholder="CBHPM ou nome...">
                   <p:ajax event="itemSelect" process="@this #{p:component('proFatItens')}"
                           update="#{p:component('proFatItens')} proFatAutoCompleteSADT"
-                          listener="#{guiaCtrl.onProFatSelect}"/>
-                </p:autoComplete>
-                <p:autoComplete id="proFatAutoCompleteOPME" value="#{guiaCtrl.proFatToAdd}"
-                                queryDelay="200"
-                                var="item"
-                                itemLabel="#{item['cbhpm']}#{empty item['cbhpm'] ? '' : ' - '}#{item['nome']}"
-                                itemValue="#{item}"
-                                onclick="this.setSelectionRange(0, this.value.length);"
-                                converter="#{proFatConverter}"
-                                inputStyleClass="vah-input"
-                                inputStyle="width: 500px;"
-                                completeMethod="#{proFatCtrl.completeMethodOPME}"
-                                rendered="#{guiaCtrl.item.tipo eq 'OPME'}"
-                                placeholder="CBHPM ou nome...">
-                  <p:ajax event="itemSelect" process="@this #{p:component('proFatItens')}"
-                          update="#{p:component('proFatItens')} proFatAutoCompleteOPME"
                           listener="#{guiaCtrl.onProFatSelect}"/>
                 </p:autoComplete>
               </h:panelGroup>
             </h:panelGroup>
             <h:panelGroup id="proFatItens" layout="block" styleClass="margin-top">
               <ui:repeat value="#{guiaCtrl.item.itens.toArray()}" var="item" varStatus="idx">
-                <h:panelGroup rendered="#{guiaCtrl.editing}">
+                <h:panelGroup id="qtdWrapper" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}" layout="block" style="margin-top: 5px;">
                   <p:spinner id="quantidade" value="#{item.quantidade}" label="Qtd." prefix="Qtd. " min="1"/>
                   <p:commandButton value="#{item.nome}" action="#{guiaCtrl.removeItemGuia(item)}"
                                    process="@this #{p:component('proFatItens')}"
                                    update="#{p:component('proFatItens')}" icon="fa fa-ban"
                                    styleClass="margin-left"/>
-                  <p:separator rendered="#{not idx.last}"/>
                 </h:panelGroup>
-                <h:outputText value="Qtd #{item.quantidade} - #{item.nome}" rendered="#{not guiaCtrl.editing}"/>
+                <h:outputText value="Qtd #{item.quantidade} - #{item.nome}" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}"/>
               </ui:repeat>
             </h:panelGroup>
           </h:panelGroup>
         </p:tab>
-        <p:tab title="Anexos">
+        <p:tab title="OPME">
+          <h:panelGroup style="height: 100%" layout="block">
+            <h:panelGroup id="opmeItem">
+              <h:panelGrid columns="2">
+                <p:selectBooleanCheckbox id="opme" value="#{guiaCtrl.item.opme}"
+                                         disabled="#{!guiaCtrl.editing
+                                         or (not empty guiaCtrl.item.statusOpme and guiaCtrl.item.statusOpme ne 'A_LIBERAR')
+                                         or not empty guiaCtrl.item.opmes
+                                         or not guiaCtrl.operation.contains('GUIA,BOTH')}">
+                  <p:ajax event="change" process="@this" update="opmeWrapper opme"/>
+                </p:selectBooleanCheckbox>
+                <p:outputLabel value="Guia com OPME?" for="opme"/>
+              </h:panelGrid>
+              <h:panelGroup id="opmeWrapper">
+                <h:panelGroup
+                  rendered="#{guiaCtrl.editing and guiaCtrl.item.opme
+                  and sessionCtrl.isUserInRoles('CIRURGICO') and guiaCtrl.operation.contains('OPME,BOTH')
+                  and (guiaCtrl.item.statusOpme eq 'LIBERADA' or guiaCtrl.item.statusOpme eq 'PENDENTE')}">
+                  <p:inputText id="opmeInput" value="#{guiaCtrl.opmeInput}" styleClass="vah-input"
+                               style="width: 500px;" placeholder="Descrição OPME...">
+                    <p:ajax event="change" process="@this"
+                            update="opmeInput #{p:component('opmeItens')}"
+                            listener="#{guiaCtrl.onChangeOpmeInput}"/>
+                  </p:inputText>
+                </h:panelGroup>
+                <h:panelGroup id="opmeItens" layout="block" styleClass="margin-top">
+                  <ui:repeat value="#{guiaCtrl.item.opmes.toArray()}" var="item" varStatus="idx">
+                    <h:panelGroup id="qtdOpmeWrapper"
+                      rendered="#{guiaCtrl.editing and guiaCtrl.item.opme and sessionCtrl.isUserInRoles('CIRURGICO') and guiaCtrl.operation.contains('OPME,BOTH')
+                      and (guiaCtrl.item.statusOpme eq 'LIBERADA' or guiaCtrl.item.statusOpme eq 'PENDENTE') }"
+                      layout="block" style="margin-top: 5px;">
+                      <p:spinner id="qtdOpme" value="#{item.quantidade}" label="Qtd."
+                                 prefix="Qtd. " min="1"
+                                 disabled="#{guiaCtrl.item.statusOpme ne 'LIBERADA' and guiaCtrl.item.statusOpme ne 'PENDENTE'}"/>
+                      <p:commandButton value="#{item.nome}" action="#{guiaCtrl.removeItemOpme(item)}"
+                                       process="@this #{p:component('opmeItens')}"
+                                       update="#{p:component('opmeItens')}" icon="fa fa-ban"
+                                       styleClass="margin-left"/>
+                    </h:panelGroup>
+                    <h:panelGroup id="outputOpmeWrapper" layout="block"
+                                  rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('OPME,BOTH')
+                                  or (guiaCtrl.item.statusOpme ne 'LIBERADA' and guiaCtrl.item.statusOpme ne 'PENDENTE')}" style="margin-top: 5px;">
+                      <h:outputText value="Qtd #{item.quantidade} - #{item.nome}"/>
+                    </h:panelGroup>
 
+                  </ui:repeat>
+                </h:panelGroup>
+              </h:panelGroup>
+            </h:panelGroup>
+          </h:panelGroup>
+        </p:tab>
+        <p:tab title="Material Estoque">
+          <h:panelGroup style="height: 100%" layout="block">
+            <h:panelGroup id="matEstqItem">
+              <h:panelGrid columns="2">
+                <p:selectBooleanCheckbox id="matEstq" value="#{guiaCtrl.item.material}" disabled="#{!guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}">
+                  <p:ajax event="change" process="@this" update="matEstqWrapper matEstq"/>
+                </p:selectBooleanCheckbox>
+                <p:outputLabel value="Guia com material de estoque?" for="matEstq"/>
+              </h:panelGrid>
+              <h:panelGroup id="matEstqWrapper">
+                <h:panelGroup rendered="#{guiaCtrl.editing and guiaCtrl.item.material and guiaCtrl.operation.contains('GUIA,BOTH')}">
+                  <p:autoComplete id="autoCompleteMaterial" value="#{guiaCtrl.proFatToAdd}"
+                                  queryDelay="200"
+                                  var="item"
+                                  itemLabel="#{item['nome']}"
+                                  itemValue="#{item}"
+                                  onclick="this.setSelectionRange(0, this.value.length);"
+                                  converter="#{proFatConverter}"
+                                  inputStyleClass="vah-input"
+                                  inputStyle="width: 500px;"
+                                  completeMethod="#{proFatCtrl.completeMethodMat}"
+                                  placeholder="CBHPM ou nome...">
+                    <p:ajax event="itemSelect" process="@this #{p:component('materialItens')}"
+                            update="#{p:component('materialItens')} autoCompleteMaterial"
+                            listener="#{guiaCtrl.onItemSelectForMaterial}"/>
+                  </p:autoComplete>
+                </h:panelGroup>
+                <h:panelGroup id="materialItens" layout="block" styleClass="margin-top">
+                  <ui:repeat value="#{guiaCtrl.item.materiais.toArray()}" var="item" varStatus="idx">
+                    <h:panelGroup id="matItemWrapper" rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}"
+                                  layout="block" style="margin-top: 5px;">
+                      <p:spinner id="qtdMaterial" value="#{item.quantidade}" label="Qtd." prefix="Qtd. " min="1"/>
+                      <p:commandButton value="#{item.nome}" action="#{guiaCtrl.removeItemMateriais(item)}"
+                                       process="@this #{p:component('materialItens')}"
+                                       update="#{p:component('materialItens')}" icon="fa fa-ban"
+                                       styleClass="margin-left"/>
+                    </h:panelGroup>
+                    <h:panelGroup id="outPutMatItemWrapper" rendered="#{not guiaCtrl.editing or not guiaCtrl.operation.contains('GUIA,BOTH')}" layout="block" style="margin-top: 5px;">
+                      <h:outputText value="Qtd #{item.quantidade} - #{item.nome}"/>
+                    </h:panelGroup>
+                  </ui:repeat>
+                </h:panelGroup>
+              </h:panelGroup>
+            </h:panelGroup>
+          </h:panelGroup>
+
+        </p:tab>
+        <p:tab title="Anexos">
           <p:fileUpload skinSimple="true"
                         label="Incluir anexo"
                         uploadLabel="Submeter"
@@ -273,7 +364,6 @@
                         update="anexosWrapper @this"
                         rendered="#{guiaCtrl.editing}"
                         fileUploadListener="#{guiaCtrl.uploadAnexo}"/>
-
           <h:panelGroup id="anexosWrapper" layout="block" styleClass="margin-top">
             <ui:repeat value="#{guiaCtrl.item.anexos.toArray()}" var="anexo" varStatus="idx">
               <p:commandButton value="#{anexo.nome} (#{anexo.tamanhoArquivo} bytes)"
@@ -282,9 +372,8 @@
                 <p:fileDownload value="#{guiaCtrl.download(anexo)}" contentDisposition="attachment"/>
               </p:commandButton>
               <p:commandButton icon="fa fa-trash" action="#{guiaCtrl.removerAnexo(anexo)}" ajax="true" process="@this"
-                               rendered="#{guiaCtrl.editing}" update="#{p:component('anexosWrapper')}"
+                               rendered="#{guiaCtrl.editing and guiaCtrl.operation.contains('GUIA,BOTH')}" update="#{p:component('anexosWrapper')}"
                                styleClass="margin-left"/>
-              <p:separator rendered="#{not idx.last}"/>
             </ui:repeat>
           </h:panelGroup>
 
@@ -302,7 +391,8 @@
         <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('modal').hide();"
                          styleClass="margin-left"/>
       </h:panelGroup>
-      <p:commandButton value="Cancelar" ajax="true" process="@this" oncomplete="PF('modal').hide();" rendered="#{not guiaCtrl.editing}"/>
+      <p:commandButton value="Fechar" ajax="true" process="@this" oncomplete="PF('modal').hide();"
+                       rendered="#{not guiaCtrl.editing}"/>
 
     </f:facet>
   </p:dialog>

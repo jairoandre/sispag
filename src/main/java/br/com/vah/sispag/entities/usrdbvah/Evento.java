@@ -1,13 +1,10 @@
 package br.com.vah.sispag.entities.usrdbvah;
 
 import br.com.vah.sispag.constants.TipoEventoEnum;
-import br.com.vah.sispag.constants.TipoGuiaEnum;
 import br.com.vah.sispag.entities.BaseEntity;
-import br.com.vah.sispag.entities.dbamv.Setor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Created by jairoportela on 01/09/2016.
@@ -39,6 +36,15 @@ public class Evento extends BaseEntity {
 
   @Column(name = "NM_MENSAGEM")
   private String mensagem;
+
+  @Column(name = "NM_DE")
+  private String from;
+
+  @Column(name = "NM_PARA")
+  private String to;
+
+  @Column(name = "NM_COMPLEMENTO")
+  private String complemento;
 
   public Evento(){}
 
@@ -95,6 +101,39 @@ public class Evento extends BaseEntity {
 
   public void setMensagem(String mensagem) {
     this.mensagem = mensagem;
+  }
+
+  public String getFrom() {
+    return from;
+  }
+
+  public void setFrom(String from) {
+    this.from = from;
+  }
+
+  public String getTo() {
+    return to;
+  }
+
+  public void setTo(String to) {
+    this.to = to;
+  }
+
+  public String getComplemento() {
+    return complemento;
+  }
+
+  public void setComplemento(String complemento) {
+    this.complemento = complemento;
+  }
+
+  public String getTexto() {
+    if (tipo.equals(TipoEventoEnum.STATUS)) {
+      return String.format("<b>Status %s</b>: de <i>[%s]</i> para <i>[%s]</i>.", complemento, from, to);
+    } else if (TipoEventoEnum.ATUALIZACAO.equals(tipo) && (getMensagem() != null && !getMensagem().isEmpty())) {
+      return String.format("<b>Atualização</b>: <i>%s</i>", mensagem);
+    }
+    return String.format("<b>%s</b>", tipo.getLabel());
   }
 
   @Override

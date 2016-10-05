@@ -329,7 +329,7 @@ a.action-link:HOVER, td.action-link a:HOVER {
 /* PRIMEFACES */
 
 input.ui-state-disabled {
-  opacity: 0.75 !important;
+  opacity: 0.80 !important;
 }
 
 .ui-menuitem-icon {
@@ -389,9 +389,6 @@ input.ui-state-disabled {
   background-color: #277116;
 }
 
-/*.ui-selectonemenu-label {
-  width: 200px !important;
-}*/
 .estadoGuia {
   padding: 3px;
   border-radius: 2px;
@@ -399,7 +396,11 @@ input.ui-state-disabled {
   font-weight: bold;
 }
 
-.estadoGuia--ANALISE {
+.estadoGuia--CRIADA {
+  background: #3992d3;
+}
+
+.estadoGuia--ANALISE, .estadoGuia--RE_ANALISE {
   background: #6a3ed3;
 }
 
@@ -419,10 +420,18 @@ input.ui-state-disabled {
   background: #a53a1b;
 }
 
+.estadoGuia--LIBERADA {
+  background: #1b8686;
+}
+
 .estadoGuia--A_LIBERAR {
   background: #a52b76;
 }
 
 .estadoGuia--CANCELADA {
   background: #a52e00;
+}
+
+.estadoGuia--A_SOLICITAR {
+  background: #a52f8d;
 }
