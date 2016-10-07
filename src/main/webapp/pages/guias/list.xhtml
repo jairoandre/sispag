@@ -445,7 +445,12 @@
       <h:panelGroup id="historicoDlgWrapper">
         <p:dialog id="historicoDlg" widgetVar="historicoDlg"
                   width="800" modal="true" header="HISTÓRICO">
+          <p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" immediate="true"
+                           icon="fa fa-print">
+            <p:fileDownload value="#{guiaCtrl.getReportEventoGuias(guiaCtrl.item)}" contentDisposition="attachment"/>
+          </p:commandButton>
           <p:dataTable value="#{guiaCtrl.item.eventos}" var="evento"
+                       styleClass="margin-top"
                        lazy="true" rendered="#{not empty guiaCtrl.item.eventos}">
             <p:column headerText="Evento" styleClass="left-align">
               <h:outputText value="#{evento.texto}" escape="false"/>

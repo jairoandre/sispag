@@ -525,6 +525,10 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   }
 
+  public StreamedContent getReportEventoGuias(Guia guia) {
+    return service.reportEventosGuia(guia);
+  }
+
   public void removerAnexo(Anexo anexo) {
     getItem().getAnexos().remove(anexo);
   }

@@ -8,13 +8,18 @@ import br.com.vah.sispag.entities.dbamv.Convenio;
 import br.com.vah.sispag.entities.dbamv.Prestador;
 import br.com.vah.sispag.entities.usrdbvah.*;
 import br.com.vah.sispag.exceptions.VahBusinessException;
+import br.com.vah.sispag.reports.EventosGuiaDTO;
+import br.com.vah.sispag.reports.ReportLoader;
 import br.com.vah.sispag.util.PaginatedSearchParam;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.model.StreamedContent;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -22,6 +27,9 @@ import java.util.*;
  */
 @Stateless
 public class GuiaSrv extends AbstractSrv<Guia> {
+
+  @Inject
+  private ReportLoader reportLoader;
 
   public static final int GUIA = 0, OPME = 1, MAT = 2;
 
@@ -316,6 +324,44 @@ public class GuiaSrv extends AbstractSrv<Guia> {
     evt.setComplemento(complemento);
     evt.setMensagem(msg);
     return guia;
+  }
+
+  public StreamedContent reportEventosGuia(Guia guia) {
+    guia = find(guia.getId());
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    SimpleDateFormat sdfHour = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Map<String, Object> params = new HashMap<>();
+    params.put("tipo", guia.getTipo().getLabel());
+    params.put("numeroGuia", guia.getNumeroGuia());
+    params.put("convenio", guia.getConvenio().getNome());
+    params.put("dataEntrega", sdf.format(guia.getDataEntrega()));
+    params.put("dataSolicitacao", sdf.format(guia.getDataEmissao()));
+    params.put("dataResposta", guia.getDataResposta() == null ? "-" : sdf.format(guia.getDataResposta()));
+    params.put("paciente", guia.getPaciente());
+    params.put("status", guia.getStatus().getLabel());
+    params.put("statusOpme", guia.getStatusOpme() == null ? "-" : guia.getStatusOpme().getLabel());
+    params.put("statusMat", guia.getStatusMat() == null ? "-" : guia.getStatusMat().getLabel());
+    List<EventosGuiaDTO> list = new ArrayList<>();
+
+    for (Evento evento : guia.getEventos()) {
+      EventosGuiaDTO dto = new EventosGuiaDTO();
+      dto.setId(evento.getId());
+      dto.setEvento(evento.getTexto());
+      dto.setUsuario(evento.getUsuario().getLogin());
+      dto.setData(sdfHour.format(evento.getDataEvento()));
+      list.add(dto);
+    }
+
+    Collections.sort(list, new Comparator<EventosGuiaDTO>() {
+      @Override
+      public int compare(EventosGuiaDTO o1, EventosGuiaDTO o2) {
+        return o1.getId().compareTo(o2.getId());
+      }
+    });
+
+
+
+    return reportLoader.printReport("historico", String.format("GUIA-%d", guia.getId()), list, params);
   }
 
 }

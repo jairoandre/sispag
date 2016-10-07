@@ -12,13 +12,16 @@ import org.primefaces.model.StreamedContent;
 
 import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jairoportela on 29/04/2016.
@@ -26,26 +29,22 @@ import java.util.List;
 @Stateless
 public class ReportLoader implements Serializable {
 
-  public StreamedContent imprimeRelatorio(String reportName, List list) {
+  public StreamedContent printReport(String reportName, String dlFilename, List list, Map params) {
 
     JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(list);
-
-    HashMap parameters = new HashMap();
 
     InputStream report = null;
 
     try {
 
       FacesContext facesContext = FacesContext.getCurrentInstance();
-
       facesContext.responseComplete();
-
       ServletContext scontext = (ServletContext) facesContext.getExternalContext().getContext();
 
-      JasperPrint jasperPrint = JasperFillManager.fillReport(scontext.getRealPath(String.format("/resources/reports/%s.jasper", reportName)), parameters, ds);
-
+      BufferedImage logo = ImageIO.read(scontext.getResource("/resources/img/logo.png"));
+      params.put("LOGO", logo);
+      JasperPrint jasperPrint = JasperFillManager.fillReport(scontext.getRealPath(String.format("/resources/reports/%s.jasper", reportName)), params, ds);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
       JRPdfExporter exporter = new JRPdfExporter();
 
       exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
@@ -53,18 +52,15 @@ public class ReportLoader implements Serializable {
       exporter.setConfiguration(new SimplePdfExporterConfiguration());
 
       exporter.exportReport();
-
       report = new ByteArrayInputStream(baos.toByteArray());
 
     } catch (Exception e) {
-
       e.printStackTrace();
-
     }
 
     DefaultStreamedContent dsc = new DefaultStreamedContent(report);
     dsc.setContentType("application/pdf");
-    dsc.setName(String.format("%s.pdf", reportName));
+    dsc.setName(String.format("%s.pdf", dlFilename));
 
     return dsc;
 
