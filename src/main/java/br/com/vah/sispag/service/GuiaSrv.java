@@ -1,7 +1,6 @@
 package br.com.vah.sispag.service;
 
 import br.com.vah.sispag.constants.StatusEnum;
-import br.com.vah.sispag.constants.RoleEnum;
 import br.com.vah.sispag.constants.TipoEventoEnum;
 import br.com.vah.sispag.constants.TipoGuiaEnum;
 import br.com.vah.sispag.entities.dbamv.Convenio;
@@ -53,6 +52,8 @@ public class GuiaSrv extends AbstractSrv<Guia> {
       guia.setStatusMat(StatusEnum.A_SOLICITAR);
     }
     guia.setDataAlteracao(new Date());
+    guia = super.create(guia);
+    initializeLists(guia);
     return guia;
   }
 
@@ -90,19 +91,19 @@ public class GuiaSrv extends AbstractSrv<Guia> {
 
     guia.setDataAlteracao(new Date());
 
-    att = getEm().merge(guia);
-    Evento ev = adicionarEvento(TipoEventoEnum.ATUALIZACAO, att, user);
+    Evento ev = adicionarEvento(TipoEventoEnum.ATUALIZACAO, guia, user);
     if (!mensagem.isEmpty()) {
       ev.setMensagem(mensagem);
     }
 
-    if (att.getOpme() && att.getStatusOpme() == null) {
-      att.setStatusOpme(StatusEnum.A_LIBERAR);
+    if (guia.getOpme() && guia.getStatusOpme() == null) {
+      guia.setStatusOpme(StatusEnum.A_LIBERAR);
     }
-    if (att.getMaterial() && att.getStatusMat() == null) {
+    if (guia.getMaterial() && guia.getStatusMat() == null) {
       guia.setStatusMat(StatusEnum.A_SOLICITAR);
     }
-    return att;
+
+    return super.update(guia);
   }
 
   public Guia liberar(Guia guia, User user) {
@@ -217,12 +218,12 @@ public class GuiaSrv extends AbstractSrv<Guia> {
 
   public Guia initializeLists(Guia guia) {
     Guia att = find(guia.getId());
-    guia.setItens(new LinkedHashSet<>(att.getItens()));
-    guia.setOpmes(new LinkedHashSet<>(att.getOpmes()));
-    guia.setMateriais(new LinkedHashSet<>(att.getMateriais()));
-    guia.setEventos(new LinkedHashSet<>(att.getEventos()));
-    guia.setAnexos(new LinkedHashSet<>(att.getAnexos()));
-    return guia;
+    new LinkedHashSet<>(att.getItens());
+    new LinkedHashSet<>(att.getOpmes());
+    new LinkedHashSet<>(att.getMateriais());
+    new LinkedHashSet<>(att.getEventos());
+    new LinkedHashSet<>(att.getAnexos());
+    return att;
   }
 
   @Override
@@ -290,6 +291,7 @@ public class GuiaSrv extends AbstractSrv<Guia> {
     crit.setFetchMode("materiais", FetchMode.SELECT);
     crit.setFetchMode("eventos", FetchMode.SELECT);
     crit.setFetchMode("anexos", FetchMode.SELECT);
+    crit.setFetchMode("prestador", FetchMode.SELECT);
 
     return crit;
   }

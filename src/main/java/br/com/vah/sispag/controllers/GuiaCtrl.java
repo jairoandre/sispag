@@ -14,6 +14,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -316,16 +317,18 @@ public class GuiaCtrl extends AbstractCtrl<Guia> {
 
   @Override
   public String doSave() {
-    if (getItem().getId() == null) {
-      setItem(service.criar(getItem(), sessionCtrl.getUser()));
-    } else {
-      try {
-        setItem(service.atualizar(getItem(), sessionCtrl.getUser()));
-      } catch (Exception e) {
-        addErrorMsg(e);
+    try {
+      if (getItem().getId() == null) {
+        service.criar(getItem(), sessionCtrl.getUser());
+        addMsg(new FacesMessage("Sucesso!", "Registro criado"), true);
+      } else {
+        service.atualizar(getItem(), sessionCtrl.getUser());
+        addMsg(new FacesMessage("Sucesso!", "Registro atualizado"), true);
       }
+    } catch (Exception e) {
+      addErrorMsg(e);
     }
-    return super.doSave();
+    return "";
   }
 
   public void autorizar(Guia guia) {

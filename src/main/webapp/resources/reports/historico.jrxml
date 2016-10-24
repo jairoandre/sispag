@@ -38,7 +38,7 @@
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="35" uuid="80b0caee-32af-4bc3-b792-2a8ec58957a3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="16" isBold="true"/>
+					<font fontName="Serif" size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[EVENTOS DA GUIA]]></text>
 			</staticText>
@@ -46,7 +46,7 @@
 				<reportElement x="0" y="35" width="80" height="20" uuid="88c05c2c-df44-477e-91d4-0ed662a5a765"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tipo de Guia:]]></text>
 			</staticText>
@@ -54,7 +54,7 @@
 				<reportElement x="320" y="35" width="55" height="20" uuid="dd1e3906-799a-43e7-be7a-7b3b1849dc61"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Convênio:]]></text>
 			</staticText>
@@ -62,7 +62,7 @@
 				<reportElement x="160" y="35" width="80" height="20" uuid="1fee1bdc-6811-4520-aa00-bebca9b63994"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nº. Guia:]]></text>
 			</staticText>
@@ -70,7 +70,7 @@
 				<reportElement x="320" y="55" width="80" height="20" uuid="d7cdb025-77f5-4986-a245-bf2627986f8f"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dt. Resp.:]]></text>
 			</staticText>
@@ -78,7 +78,7 @@
 				<reportElement x="160" y="55" width="80" height="20" uuid="36f85e2f-ee13-4444-9d6e-75b9941ef662"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dt. Solicit.:]]></text>
 			</staticText>
@@ -86,7 +86,7 @@
 				<reportElement x="0" y="55" width="80" height="20" uuid="47fdb847-d763-40b2-882d-a61abe868060"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dt. Entrega:]]></text>
 			</staticText>
@@ -94,7 +94,7 @@
 				<reportElement x="0" y="75" width="80" height="20" uuid="fa82a377-22af-4da6-b9d7-0f8e09570d4a"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Paciente:]]></text>
 			</staticText>
@@ -102,7 +102,7 @@
 				<reportElement x="80" y="35" width="80" height="20" uuid="c21185ee-fe4b-4ac8-a4dc-7393da2f7580"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tipo}]]></textFieldExpression>
 			</textField>
@@ -110,7 +110,7 @@
 				<reportElement x="375" y="35" width="180" height="20" uuid="aa8e68eb-def5-4352-ba55-0f887fc75b45"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{convenio}]]></textFieldExpression>
 			</textField>
@@ -118,7 +118,7 @@
 				<reportElement x="240" y="35" width="80" height="20" uuid="0ae2f7e2-5663-4701-be52-16c0917f1050"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{numeroGuia}]]></textFieldExpression>
 			</textField>
@@ -126,7 +126,7 @@
 				<reportElement x="240" y="55" width="80" height="20" uuid="8a99799b-3fd1-4930-abc3-669e8e41b88f"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dataSolicitacao}]]></textFieldExpression>
 			</textField>
@@ -134,7 +134,7 @@
 				<reportElement x="400" y="55" width="155" height="20" uuid="305c9612-b54b-4b1c-ac54-e2ccbe743bc4"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dataResposta}]]></textFieldExpression>
 			</textField>
@@ -142,7 +142,7 @@
 				<reportElement x="80" y="55" width="80" height="20" uuid="b9aef7d6-730d-4637-86a7-e5f5a7696941"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{dataEntrega}]]></textFieldExpression>
 			</textField>
@@ -150,7 +150,7 @@
 				<reportElement x="80" y="75" width="475" height="20" uuid="07178779-da2d-4e21-b5e7-957537f27d76"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{paciente}]]></textFieldExpression>
 			</textField>
@@ -158,7 +158,7 @@
 				<reportElement x="0" y="95" width="80" height="20" uuid="720c75b1-7138-4260-89cd-310ff239b9ce"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Status:]]></text>
 			</staticText>
@@ -166,7 +166,7 @@
 				<reportElement x="80" y="95" width="80" height="20" uuid="077f367b-bfe1-4933-8e15-03a484444216"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{status}]]></textFieldExpression>
 			</textField>
@@ -174,7 +174,7 @@
 				<reportElement x="160" y="95" width="80" height="20" uuid="93f22c72-6d73-477d-b7e7-ce5b032ff52a"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Status OPME:]]></text>
 			</staticText>
@@ -182,7 +182,7 @@
 				<reportElement x="240" y="95" width="80" height="20" uuid="99538fa7-dd1a-4ef7-9a57-7f091c59f851"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{statusOpme}]]></textFieldExpression>
 			</textField>
@@ -190,7 +190,7 @@
 				<reportElement x="320" y="95" width="80" height="20" uuid="4dc7bdaf-1f5b-47cd-8d60-2470b38a6bb0"/>
 				<box topPadding="5"/>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Status Mat.:]]></text>
 			</staticText>
@@ -198,7 +198,7 @@
 				<reportElement x="400" y="95" width="80" height="20" uuid="06cb35f3-bfc6-4671-841d-f9a9ad7a79b4"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{statusMat}]]></textFieldExpression>
 			</textField>
@@ -212,7 +212,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Evento]]></text>
 			</staticText>
@@ -222,7 +222,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Usuário]]></text>
 			</staticText>
@@ -232,7 +232,7 @@
 					<bottomPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Tahoma" isBold="true"/>
+					<font fontName="Serif" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Data]]></text>
 			</staticText>
@@ -244,7 +244,7 @@
 				<reportElement style="zebra" x="405" y="0" width="150" height="20" uuid="6d8dbd30-cadc-43e3-a3a4-f1b199a35d72"/>
 				<box topPadding="5"/>
 				<textElement textAlignment="Right">
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
 			</textField>
@@ -252,7 +252,7 @@
 				<reportElement style="zebra" x="325" y="0" width="80" height="20" uuid="75206e20-ff64-4d36-a682-ab7d33d8c9d7"/>
 				<box topPadding="5"/>
 				<textElement>
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{usuario}]]></textFieldExpression>
 			</textField>
@@ -260,7 +260,7 @@
 				<reportElement style="zebra" x="0" y="0" width="325" height="20" uuid="618a8c8a-f394-4f3c-8166-c65758cafce6"/>
 				<box topPadding="5"/>
 				<textElement markup="html">
-					<font fontName="Tahoma"/>
+					<font fontName="Serif"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{evento}]]></textFieldExpression>
 			</textField>

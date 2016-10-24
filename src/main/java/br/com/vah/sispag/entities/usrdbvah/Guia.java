@@ -85,23 +85,23 @@ public class Guia extends BaseEntity {
   @Column(name = "SN_MATERIAL")
   private Boolean material = false;
 
-  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("id DESC")
   private Set<ItemGuia> itens = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("id DESC")
   private Set<ItemOpme> opmes = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("id DESC")
   private Set<ItemMat> materiais = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("id DESC")
   private Set<Evento> eventos = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "guia", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("id DESC")
   private Set<Anexo> anexos = new LinkedHashSet<>();
 

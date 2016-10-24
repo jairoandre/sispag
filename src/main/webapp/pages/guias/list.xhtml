@@ -307,6 +307,7 @@
                 <p:menuitem value="Comentar" action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             process="@this" update="#{p:component('comentarDlgWrapper')}"
                             oncomplete="PF('comentarDlg').show()"
+                            rendered="#{sessionCtrl.isUserInRoles('RECEPCAO,CIRURGICO')}"
                             icon="fa fa-comment"/>
                 <p:menuitem value="Comentários" action="#{guiaCtrl.preOpenModal(guia, 'GUIA')}"
                             process="@this" update="#{p:component('comentariosDlgWrapper')}"
