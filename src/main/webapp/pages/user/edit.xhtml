@@ -4,7 +4,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:vah="http://java.sun.com/jsf/composite/vah"
-                xmlns:uivah="http://vah.com.br/vah">
+                xmlns:uivah="http://vah.com.br/vah"
+                xmlns:p="http://primefaces.org/ui">
   <ui:define name="metadata">
     <f:metadata>
       <f:viewParam name="id" value="#{userCtrl.id}"/>
@@ -20,7 +21,10 @@
         <uivah:inputText id="name" label="Login"
                             value="#{userCtrl.item.login}"
                             editing="false"/>
-
+        <p:outputLabel value="Nome" for="title" styleClass="label"/>
+        <p:inputText id="title" label="Nome" style="width: 200px;" maxlength="75"
+                         value="#{userCtrl.item.title}"/>
+        <h:panelGroup/>
         <uivah:selectOneEnum id="role" label="Perfil" value="#{userCtrl.item.role}" required="true"
                              editing="#{userCtrl.editing}"
                              options="#{userCtrl.roles}"/>

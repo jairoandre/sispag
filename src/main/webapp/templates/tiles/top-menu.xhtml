@@ -19,6 +19,14 @@
       <p:menuitem value="OPME"
                   action="/pages/contrato/list.xhtml?faces-redirect=true" ajax="false"
                   icon="fa fa-user-md" onstart="PF('changePage').show()" rendered="false"/>
+      <p:submenu label="Relatórios" icon="fa fa-bar-chart">
+        <p:menuitem value="Tempo Médio"
+                    action="/pages/relatorios/medias.xhtml?faces-redirect=true" ajax="false"
+                    icon="fa fa-line-chart" onstart="PF('changePage').show()"/>
+        <p:menuitem value="Produtividade"
+                    action="/pages/relatorios/produtividade.xhtml?faces-redirect=true" ajax="false"
+                    icon="fa fa-asterisk" onstart="PF('changePage').show()"/>
+      </p:submenu>
       <f:facet name="options">
 
         <h:panelGroup style="margin-top: 3px;" layout="block">

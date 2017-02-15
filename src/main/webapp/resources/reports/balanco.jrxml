@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ordem" pageWidth="595" pageHeight="845" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="76479a3c-133e-4501-9ab5-ef98285538a8">
+	<property name="ireport.zoom" value="1.0000000000000047"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="zebra">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EEEEEE"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="LOGO" class="java.lang.Object"/>
+	<parameter name="begin" class="java.lang.String"/>
+	<parameter name="end" class="java.lang.String"/>
+	<field name="convenio" class="java.lang.String"/>
+	<field name="criadas" class="java.lang.Integer"/>
+	<field name="autorizadas" class="java.lang.Integer"/>
+	<field name="media" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="73" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="120" height="35" uuid="ed068acf-e628-4544-983a-f84da01beeba"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="35" uuid="80b0caee-32af-4bc3-b792-2a8ec58957a3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GUIAS ABERTAS E TEMPOS MÉDIOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="35" width="555" height="20" uuid="a0b9c4fa-bbc9-4599-9f35-d5742e1b6e79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[String.format("%s À %s", $P{begin}, $P{end});]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Transparent" x="0" y="0" width="235" height="20" backcolor="#FFFFFF" uuid="93f085b5-5ebc-4910-b484-4bad08f61ed1"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[CONVÊNIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="235" y="0" width="120" height="20" backcolor="#FFFFFF" uuid="21d16a6b-2712-47af-bd20-4bf5ff61d6b1"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[CRIADAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="355" y="0" width="120" height="20" backcolor="#FFFFFF" uuid="e865f220-3d5c-4673-971a-1699710bfceb"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[AUTORIZADAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="475" y="0" width="80" height="20" backcolor="#FFFFFF" uuid="49dc86d5-f154-4d42-91ea-0bd16490eb8b"/>
+				<box>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[MÉDIA (DIAS)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="235" height="20" uuid="cc3e6587-7fc9-4534-8863-28173ce3c8ed"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{convenio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="235" y="0" width="120" height="20" uuid="e8ecaea9-3cb7-450d-9343-d867a9b8863c"/>
+				<box leftPadding="0" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{criadas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="0" width="120" height="20" uuid="aeb34b44-342e-47dd-90d1-722960ba155f"/>
+				<box leftPadding="0" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{autorizadas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="475" y="0" width="80" height="20" uuid="7c489439-b661-454b-9ec4-fdaf4f7dec65"/>
+				<box leftPadding="0" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{media}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement x="455" y="0" width="100" height="15" uuid="d0750aa3-992f-41c2-a17f-55ccbb7b89a6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="0" width="295" height="15" uuid="1d7c62db-6d98-4abe-96c6-3505c63081fe"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

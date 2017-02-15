@@ -197,7 +197,10 @@ public class GuiaSrv extends AbstractSrv<Guia> {
     Collections.sort(eventos, new Comparator<Evento>() {
       @Override
       public int compare(Evento o1, Evento o2) {
-        return o1.getId().compareTo(o2.getId()) * -1;
+        if (o1 != null && o2 != null) {
+          return o1.getId().compareTo(o2.getId()) * -1;
+        }
+        return 0;
       }
     });
 

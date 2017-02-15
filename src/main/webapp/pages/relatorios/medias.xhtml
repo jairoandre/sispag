@@ -1,0 +1,32 @@
+<ui:composition template="/templates/layout.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h:form>
+      <p:panel header="Relatório - Tempos médios">
+
+        <h:panelGrid columns="2">
+          <p:outputLabel value="Início" for="begin" styleClass="lance-label"/>
+          <p:calendar id="begin" value="#{reportCtrl.begin}" pattern="dd/MM/yyyy" required="true"/>
+          <p:outputLabel value="Término" for="end" styleClass="lance-label"/>
+          <p:calendar id="end" value="#{reportCtrl.end}" pattern="dd/MM/yyyy" required="true"/>
+        </h:panelGrid>
+
+        <h:panelGroup layout="block" styleClass="margin-top">
+          <p:commandButton rendered="true" id="gerarRelatorio" value="Gerar Relatório" ajax="false"
+                           process="@form"
+                           style="font-size: 25px;"
+                           onclick="PrimeFaces.monitorDownload(start, stop);">
+            <p:fileDownload value="#{reportCtrl.relatorioGuias}"/>
+          </p:commandButton>
+        </h:panelGroup>
+
+
+      </p:panel>
+    </h:form>
+  </ui:define>
+
+</ui:composition>
